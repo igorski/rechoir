@@ -1,0 +1,7 @@
+/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build/CMakeFiles/__PLUGIN_NAME__.dir
+/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build/CMakeFiles/edit_cache.dir
+/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build/CMakeFiles/rebuild_cache.dir
+/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build/CMakeFiles/list_install_components.dir
+/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build/CMakeFiles/install.dir
+/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build/CMakeFiles/install/local.dir
+/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build/CMakeFiles/install/strip.dir

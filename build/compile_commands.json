@@ -1,0 +1,77 @@
+[
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/audiobuffer.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/audiobuffer.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/audiobuffer.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/filter.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/filter.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/filter.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/lfo.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/lfo.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/lfo.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/limiter.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/limiter.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/limiter.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/pitchshifter.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/pitchshifter.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/pitchshifter.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/plugin_process.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/plugin_process.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/plugin_process.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/vst.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/vst.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/vst.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/vstentry.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/vstentry.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/vstentry.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/src/ui/controller.cpp.o -c /Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/ui/controller.cpp",
+  "file": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/src/ui/controller.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/vst/vstaudioeffect.cpp.o -c /Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/vst/vstaudioeffect.cpp",
+  "file": "/Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/vst/vstaudioeffect.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/vstgui_uidescription.cpp.o -c /Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/vstgui_uidescription.cpp",
+  "file": "/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/vstgui_uidescription.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/plugin-bindings/vst3editor.cpp.o -c /Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/plugin-bindings/vst3editor.cpp",
+  "file": "/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/plugin-bindings/vst3editor.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/vst/vstguieditor.cpp.o -c /Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/vst/vstguieditor.cpp",
+  "file": "/Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/vst/vstguieditor.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/main/macmain.cpp.o -c /Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/main/macmain.cpp",
+  "file": "/Library/VST_SDK.3.7.0/VST3_SDK/public.sdk/source/main/macmain.cpp"
+},
+{
+  "directory": "/Users/igorzinken/Documents/Werk/Projecten/VSTs/choirdelay/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DNDEBUG -DPLUGIN_BUILD_NUMBER=1 -DPLUGIN_COPYRIGHT=\"igorski.nl 2022\" -DPLUGIN_MAJOR_VERSION=1 -DPLUGIN_MINOR_VERSION=0 -DPLUGIN_RELEASE_NUMBER=1 -D__PLUGIN_NAME___EXPORTS -I/Library/VST_SDK.3.7.0/VST3_SDK -I/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4  -std=c++14 -stdlib=libc++ -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -mmacosx-version-min=10.10 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -std=gnu++14 -o CMakeFiles/__PLUGIN_NAME__.dir/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/vstgui_mac.mm.o -c /Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/vstgui_mac.mm",
+  "file": "/Library/VST_SDK.3.7.0/VST3_SDK/vstgui4/vstgui/vstgui_mac.mm"
+}
+]
