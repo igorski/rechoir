@@ -25,9 +25,11 @@
 
 #include "global.h"
 #include "audiobuffer.h"
-#include "pitchshifter.h"
+#include "bitcrusher.h"
 #include "filter.h"
 #include "limiter.h"
+#include "pitchshifter.h"
+#include <vector>
 
 using namespace Steinberg;
 
@@ -57,13 +59,21 @@ class PluginProcess {
         void setDelayFeedback( float value );
         void setDelayMix( float value );
 
+        void setPitchShift( float value ) {
+            float shift = std::fmin( 2.f, std::fmax( 0.5f, value ));
+            for ( auto pitchShifter : *_pitchShifters ) {
+                pitchShifter->pitchShift = shift;
+            }
+        }
+
         // synchronize the delays tempo with the host
         // tempo is in BPM, time signature provided as: timeSigNumerator / timeSigDenominator (e.g. 3/4)
 
         void setTempo( double tempo, int32 timeSigNumerator, int32 timeSigDenominator );
 
+        BitCrusher* bitCrusher;
         Filter* filter;
-        PitchShifter* pitchshifter;
+        std::vector<PitchShifter*>* _pitchShifters;
         Limiter* limiter;
 
         // whether effects are applied onto the input delay signal or onto

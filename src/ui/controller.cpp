@@ -85,21 +85,21 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
 
     RangeParameter* delayTimeParam = new RangeParameter(
         USTRING( "Delay time" ), kDelayTimeId, USTRING( "%" ),
-        0.f, 1.f, 0.f,
+        0.f, 1.f, 0.25f,
         0, ParameterInfo::kCanAutomate, unitId
     );
     parameters.addParameter( delayTimeParam );
 
     RangeParameter* delayFeedbackParam = new RangeParameter(
         USTRING( "Delay feedback" ), kDelayFeedbackId, USTRING( "%" ),
-        0.f, 1.f, 0.f,
+        0.f, 1.f, 0.5f,
         0, ParameterInfo::kCanAutomate, unitId
     );
     parameters.addParameter( delayFeedbackParam );
 
     RangeParameter* delayMixParam = new RangeParameter(
         USTRING( "Delay mix" ), kDelayMixId, USTRING( "%" ),
-        0.f, 1.f, 0.f,
+        0.f, 1.f, 0.5f,
         0, ParameterInfo::kCanAutomate, unitId
     );
     parameters.addParameter( delayMixParam );
@@ -137,6 +137,20 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
     );
     parameters.addParameter( pitchShiftParam );
 
+    RangeParameter* filterCutoffParam = new RangeParameter(
+        USTRING( "Filter cut off" ), kFilterCutoffId, USTRING( "%" ),
+        0.f, 1.f, 0.5f,
+        0, ParameterInfo::kCanAutomate, unitId
+    );
+    parameters.addParameter( filterCutoffParam );
+
+    RangeParameter* filterResonanceParam = new RangeParameter(
+        USTRING( "Filter resonance" ), kFilterResonanceId, USTRING( "%" ),
+        0.f, 1.f, 0.5f,
+        0, ParameterInfo::kCanAutomate, unitId
+    );
+    parameters.addParameter( filterResonanceParam );
+
 
 // --- AUTO-GENERATED END
 
@@ -170,17 +184,17 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
 
 // --- AUTO-GENERATED SETCOMPONENTSTATE START
 
-    float savedDelayTime = 0.f;
+    float savedDelayTime = 0.25f;
     if ( streamer.readFloat( savedDelayTime ) == false )
         return kResultFalse;
     setParamNormalized( kDelayTimeId, savedDelayTime );
 
-    float savedDelayFeedback = 0.f;
+    float savedDelayFeedback = 0.5f;
     if ( streamer.readFloat( savedDelayFeedback ) == false )
         return kResultFalse;
     setParamNormalized( kDelayFeedbackId, savedDelayFeedback );
 
-    float savedDelayMix = 0.f;
+    float savedDelayMix = 0.5f;
     if ( streamer.readFloat( savedDelayMix ) == false )
         return kResultFalse;
     setParamNormalized( kDelayMixId, savedDelayMix );
@@ -209,6 +223,16 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
     if ( streamer.readFloat( savedPitchShift ) == false )
         return kResultFalse;
     setParamNormalized( kPitchShiftId, savedPitchShift );
+
+    float savedFilterCutoff = 0.5f;
+    if ( streamer.readFloat( savedFilterCutoff ) == false )
+        return kResultFalse;
+    setParamNormalized( kFilterCutoffId, savedFilterCutoff );
+
+    float savedFilterResonance = 0.5f;
+    if ( streamer.readFloat( savedFilterResonance ) == false )
+        return kResultFalse;
+    setParamNormalized( kFilterResonanceId, savedFilterResonance );
 
 
 // --- AUTO-GENERATED SETCOMPONENTSTATE END
@@ -352,6 +376,16 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             return kResultTrue;
 
         case kPitchShiftId:
+            sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
+            Steinberg::UString( string, 128 ).fromAscii( text );
+            return kResultTrue;
+
+        case kFilterCutoffId:
+            sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
+            Steinberg::UString( string, 128 ).fromAscii( text );
+            return kResultTrue;
+
+        case kFilterResonanceId:
             sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;

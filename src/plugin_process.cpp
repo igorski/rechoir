@@ -31,19 +31,21 @@ PluginProcess::PluginProcess( int amountOfChannels ) {
     _delayMix      = .5f;
     _delayFeedback = .1f;
 
-    _delayBuffer  = new AudioBuffer( amountOfChannels, Calc::millisecondsToBuffer( MAX_DELAY_TIME_MS ));
-    _delayIndices = new int[ amountOfChannels ];
+    _delayBuffer   = new AudioBuffer( amountOfChannels, Calc::millisecondsToBuffer( MAX_DELAY_TIME_MS ));
+    _delayIndices  = new int[ amountOfChannels ];
+    _pitchShifters = new std::vector<PitchShifter*>( amountOfChannels );
 
     for ( int i = 0; i < amountOfChannels; ++i ) {
         _delayIndices[ i ] = 0;
+        _pitchShifters->at( i ) = new PitchShifter( 4 );
     }
     _amountOfChannels = amountOfChannels;
 
-    filter       = new Filter();
-    pitchshifter = new PitchShifter( 4 );
-    limiter      = new Limiter( 10.f, 500.f, .6f );
+    bitCrusher = new BitCrusher( 8, .5f, .5f );
+    filter     = new Filter();
+    limiter    = new Limiter( 10.f, 500.f, .6f );
 
-    filterPostMix     = true;
+    filterPostMix = true;
 
     // these will be synced to host, see vst.cpp. here we default to 120 BPM in 4/4 time
     _tempo              = 120.0;
@@ -59,11 +61,15 @@ PluginProcess::PluginProcess( int amountOfChannels ) {
 
 PluginProcess::~PluginProcess() {
     delete[] _delayIndices;
+    while ( !_pitchShifters->empty()) {
+        delete _pitchShifters->back(), _pitchShifters->pop_back();
+    }
+    delete _pitchShifters;
     delete _delayBuffer;
     delete _postMixBuffer;
     delete _preMixBuffer;
+    delete bitCrusher;
     delete filter;
-    delete pitchshifter;
     delete limiter;
 }
 
@@ -75,17 +81,18 @@ void PluginProcess::setDelayTime( float value )
     // when the delay is synced to the host, the maximum time is a single measure
     // at the current tempo and time signature
 
-    float delayMaxInMs = ( syncDelayToHost ) ? (( 60.f / _tempo ) * _timeSigDenominator ) * 1000.f
-        : MAX_DELAY_TIME_MS;
+    float delayMaxInMs = ( syncDelayToHost ) ? (( 60.f / _tempo ) * _timeSigDenominator ) * 1000.f : MAX_DELAY_TIME_MS;
 
     _delayTime = Calc::millisecondsToBuffer( Calc::cap( value ) * delayMaxInMs );
 
-    if ( syncDelayToHost )
+    if ( syncDelayToHost ) {
         syncDelayTime();
+    }
 
     for ( int i = 0; i < _amountOfChannels; ++i ) {
-        if ( _delayIndices[ i ] >= _delayTime )
+        if ( _delayIndices[ i ] >= _delayTime ) {
             _delayIndices[ i ] = 0;
+        }
     }
 }
 

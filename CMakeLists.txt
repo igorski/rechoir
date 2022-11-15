@@ -104,6 +104,8 @@ set(vst_sources
     src/global.h
     src/audiobuffer.h
     src/audiobuffer.cpp
+    src/bitcrusher.h
+    src/bitcrusher.cpp
     src/filter.h
     src/filter.cpp
     src/lfo.h

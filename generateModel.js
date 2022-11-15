@@ -31,21 +31,21 @@ const MODEL = [
         name: "delayTime",
         descr: "Delay time",
         unitDescr: "%",
-        value: { min: "0.f", max: "1.f", type: "percent" },
+        value: { min: "0.f", max: "1.f", def: "0.25f", type: "percent" },
         ui: { x: 10, y: 120, w: 134, h: 21 }
     },
     {
         name: "delayFeedback",
         descr: "Delay feedback",
         unitDescr: "%",
-        value: { min: "0.f", max: "1.f", type: "percent" },
+        value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
         ui: { x: 10, y: 120, w: 134, h: 21 }
     },
     {
         name: "delayMix",
         descr: "Delay mix",
         unitDescr: "%",
-        value: { min: "0.f", max: "1.f", type: "percent" },
+        value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
         ui: { x: 10, y: 120, w: 134, h: 21 }
     },
     {
@@ -82,6 +82,20 @@ const MODEL = [
     {
         name: "pitchShift",
         descr: "Pitch shift amount",
+        unitDescr: "%",
+        value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
+        ui: { x: 10, y: 150, w: 134, h: 21 }
+    },
+    {
+        name: "filterCutoff",
+        descr: "Filter cut off",
+        unitDescr: "%",
+        value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
+        ui: { x: 10, y: 150, w: 134, h: 21 }
+    },
+    {
+        name: "filterResonance",
+        descr: "Filter resonance",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
         ui: { x: 10, y: 150, w: 134, h: 21 }

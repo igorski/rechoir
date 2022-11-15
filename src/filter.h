@@ -46,7 +46,10 @@ class Filter {
 
         // update Filter properties, the values here are in normalized 0 - 1 range
         void updateProperties( float cutoffPercentage, float resonancePercentage, float LFORatePercentage, float fLFODepth );
-
+        void updateProperties( float cutoffPercentage, float resonancePercentage ) {
+            updateProperties( cutoffPercentage, resonancePercentage, 0.f, 0.f );
+        }
+        
         // apply filter to incoming sampleBuffer contents
         void process( float* sampleBuffer, int bufferSize, int c );
 

@@ -60,8 +60,9 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
 
         // PRE MIX processing
 
-        if ( !filterPostMix )
+        if ( !filterPostMix ) {
             filter->process( channelPreMixBuffer, bufferSize, c );
+        }
 
         // DELAY processing applied onto the temp buffer
 
@@ -94,10 +95,12 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
         // POST MIX processing
         // apply the post mix effect processing
 
-        pitchshifter->process( channelPostMixBuffer, bufferSize );
+        _pitchShifters->at( c )->process( channelPostMixBuffer, bufferSize );
 
-        if ( filterPostMix )
+        if ( filterPostMix ) {
             filter->process( channelPostMixBuffer, bufferSize, c );
+        }
+        bitCrusher->process( channelPostMixBuffer, bufferSize );
 
         // mix the input and processed post mix buffers into the output buffer
 

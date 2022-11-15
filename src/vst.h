@@ -89,14 +89,16 @@ class __PLUGIN_NAME__ : public AudioEffect
 
 // --- AUTO-GENERATED START
 
-        float fDelayTime = 0.f;    // Delay time
-        float fDelayFeedback = 0.f;    // Delay feedback
-        float fDelayMix = 0.f;    // Delay mix
+        float fDelayTime = 0.25f;    // Delay time
+        float fDelayFeedback = 0.5f;    // Delay feedback
+        float fDelayMix = 0.5f;    // Delay mix
         bool fDelayHostSync = false;    // Sync delay
         float fBitDepth = 1.f;    // Resolution
         float fBitCrushLfo = 0.f;    // Bit crush LFO
         float fBitCrushLfoDepth = 0.f;    // Bit crush LFO depth
         float fPitchShift = 0.5f;    // Pitch shift amount
+        float fFilterCutoff = 0.5f;    // Filter cut off
+        float fFilterResonance = 0.5f;    // Filter resonance
 
 // --- AUTO-GENERATED END
 

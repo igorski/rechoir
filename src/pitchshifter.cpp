@@ -73,7 +73,7 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
     int i, n, t;
     long k;
 
-    if ( gRover == false ) {
+    if ( gRover == 0 ) {
         gRover = inFifoLatency;
     }
     float fftFrameSizeFloat = ( float ) FFT_FRAME_SIZE;
@@ -200,7 +200,7 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
 
             /* zero negative frequencies */
             //for ( k = FFT_FRAME_SIZE + 2; k < 2 * FFT_FRAME_SIZE; ++k )
-            for ( k = FFT_FRAME_SIZE + 2, n = FFT_FRAME_SIZE << 1; k < n; ++k ) {
+            for ( k = FFT_FRAME_SIZE + 2; k < MAX_FRAME_LENGTH; ++k ) {
                 gFFTworksp[ k ] = 0.;
             }
 
@@ -215,10 +215,10 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
                 gOutputAccum[ k ] += window * gFFTworksp[ n ] * invFftFrameSize2;
             }
             */
-            for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, n += 2, t += invFftFrameSizePI2 )
+            for ( k = 0; k < FFT_FRAME_SIZE; ++k )
             {
-                window             = -.5 * cos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + .5;
-                gOutputAccum[ k ] += 2. * window * gFFTworksp[ n ] / ( FFT_FRAME_SIZE_HALF * osamp );
+                window = -0.5f * cos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
+                gOutputAccum[ k ] += 2.f * window * gFFTworksp[ 2 * k ] / ( FFT_FRAME_SIZE_HALF * osamp );
             }
 
             for ( k = 0; k < stepSize; ++k ) {

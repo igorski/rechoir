@@ -41,6 +41,8 @@ enum
     kBitCrushLfoId = 6,    // Bit crush LFO
     kBitCrushLfoDepthId = 7,    // Bit crush LFO depth
     kPitchShiftId = 8,    // Pitch shift amount
+    kFilterCutoffId = 9,    // Filter cut off
+    kFilterResonanceId = 10,    // Filter resonance
 
 // --- AUTO-GENERATED END
 };

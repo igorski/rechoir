@@ -66,13 +66,7 @@ class PitchShifter
         // The routine takes a pitchShift factor value which is between 0.5 (one octave down)
         // and 2. (one octave up). A value of exactly 1 does not change the pitch
 
-        void setShift( float value ) {
-            pitchShift = std::fmin( 2.f, std::fmax( 0.5f, value ));
-        }
-
-        float getShift() {
-            return pitchShift;
-        }
+        float pitchShift;
 
         void process( float* channelBuffer, int bufferSize );
 
@@ -87,11 +81,10 @@ class PitchShifter
         float gAnaMagn    [ MAX_FRAME_LENGTH ];
         float gSynFreq    [ MAX_FRAME_LENGTH ];
         float gSynMagn    [ MAX_FRAME_LENGTH ];
+
         long gRover;
         float magn, phase, tmp, window, real, imag, freqPerBin, expct, invFftFrameSizePI2, invFftFrameSize2, osampPI2;
         long qpd, index, inFifoLatency, stepSize, osamp;
-
-        float pitchShift;
 
         // inlining this FFT routine (by S.M. Bernsee, 1996) provides a 21% performance boost
 

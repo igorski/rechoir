@@ -167,6 +167,16 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
                             fPitchShift = ( float ) value;
                         break;
 
+                    case kFilterCutoffId:
+                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
+                            fFilterCutoff = ( float ) value;
+                        break;
+
+                    case kFilterResonanceId:
+                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
+                            fFilterResonance = ( float ) value;
+                        break;
+
 // --- AUTO-GENERATED PROCESS END
 
                     case kBypassId:
@@ -309,6 +319,14 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     if ( streamer.readFloat( savedPitchShift ) == false )
         return kResultFalse;
 
+    float savedFilterCutoff = 0.f;
+    if ( streamer.readFloat( savedFilterCutoff ) == false )
+        return kResultFalse;
+
+    float savedFilterResonance = 0.f;
+    if ( streamer.readFloat( savedFilterResonance ) == false )
+        return kResultFalse;
+
 
 // --- AUTO-GENERATED SETSTATE END
 
@@ -324,6 +342,8 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     fBitCrushLfo = savedBitCrushLfo;
     fBitCrushLfoDepth = savedBitCrushLfoDepth;
     fPitchShift = savedPitchShift;
+    fFilterCutoff = savedFilterCutoff;
+    fFilterResonance = savedFilterResonance;
 
 // --- AUTO-GENERATED SETSTATE APPLY END
 
@@ -381,6 +401,8 @@ tresult PLUGIN_API __PLUGIN_NAME__::getState( IBStream* state )
     streamer.writeFloat( fBitCrushLfo );
     streamer.writeFloat( fBitCrushLfoDepth );
     streamer.writeFloat( fPitchShift );
+    streamer.writeFloat( fFilterCutoff );
+    streamer.writeFloat( fFilterResonance );
 
 // --- AUTO-GENERATED GETSTATE END
 
@@ -513,10 +535,14 @@ void __PLUGIN_NAME__::syncModel()
     pluginProcess->setDelayFeedback( fDelayFeedback );
     pluginProcess->setDelayMix( fDelayMix );
 
-    //pluginProcess->bitCrusher->setLFO( fBitCrushLfo, fBitCrushLfoDepth );
+    pluginProcess->bitCrusher->setAmount( fBitDepth );
+    // regraderProcess->bitCrusher->setLFO( fLFOBitResolution, fLFOBitResolutionDepth );
+    pluginProcess->filter->updateProperties( fFilterCutoff, fFilterResonance );
 
     bool isShiftUp = Calc::toBool( fPitchShift );
-    pluginProcess->pitchshifter->setShift( isShiftUp ? Calc::scale( fPitchShift, 1.f, 2.f ) : fPitchShift + 0.5f );
+    float shiftValue = isShiftUp ? Calc::scale( fPitchShift, 1.f, 2.f ) : fPitchShift + 0.5f ;
+
+    pluginProcess->setPitchShift( shiftValue );
 }
 
 }
