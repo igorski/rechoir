@@ -27,6 +27,10 @@
 #include <algorithm>
 #include "global.h"
 
+// internally we handle all audio as 32-bit floats (hence 0x7f800000)
+// this methods is used by comb and allpass
+#define undenormalise(sample) ((((*(uint32 *)&(sample))&0x7f800000)==0)&&((sample)!=0.f))
+
 /**
  * convenience utilities to process values
  * common to the VST plugin context
@@ -78,6 +82,13 @@ namespace Calc {
             return value - resto;
 
         return value + valueToRoundTo - resto;
+    }
+
+    // inverts a 0 - 1 normalized value to have 0 be the highest, 1 the lowest
+
+    inline float inverseNormalize( float value )
+    {
+        return ( 1.f - value ) / 1.f;
     }
 
     // convenience method to scale given value and its expected maxValue against

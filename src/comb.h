@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Igor Zinken - https://www.igorski.nl
+ * Based on freeverb by Jezar at Dreampoint (June 2000)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,31 +20,48 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef __PARAMIDS_HEADER__
-#define __PARAMIDS_HEADER__
+#ifndef __COMB_H_INCLUDED__
+#define __COMB_H_INCLUDED__
 
-enum
+#include "global.h"
+#include "calc.h"
+
+using namespace Steinberg;
+
+namespace Igorski {
+class Comb
 {
-    // ids for all visual controls
-    // these identifiers are mapped to the UI in plugin.uidesc
-    // and consumed by controller.cpp to update the model
+    public:
+        Comb();
+        void setBuffer( float *buf, int size );
+        inline float process( float input )
+        {
+            float output = _buffer[ _bufIndex ];
+            undenormalise( output );
 
-    kBypassId = 0, // parameter used to bypass the effect processing
+            _filterStore = ( output * _damp2 ) + ( _filterStore * _damp1 );
+            undenormalise( _filterStore );
 
-// --- AUTO-GENERATED START
+            _buffer[_bufIndex] = input + ( _filterStore * _feedback );
+            if ( ++_bufIndex >= _bufSize ) {
+                _bufIndex = 0;
+            }
+            return output;
+        }
+        void mute();
+        float getDamp();
+        void setDamp( float val );
+        float getFeedback();
+        void setFeedback( float val );
 
-    kDelayTimeId = 1,    // Delay time
-    kDelayFeedbackId = 2,    // Delay feedback
-    kDelayMixId = 3,    // Delay mix
-    kDelayHostSyncId = 4,    // Sync delay
-    kDecimatorId = 5,    // Decimation
-    kReverbId = 6,    // Freeze
-    kHarmonizeId = 7,    // Choir
-    kPitchShiftId = 8,    // Pitch shift amount
-    kFilterCutoffId = 9,    // Filter cut off
-    kFilterResonanceId = 10,    // Filter resonance
-
-// --- AUTO-GENERATED END
+    private:
+        float  _feedback;
+        float  _filterStore;
+        float  _damp1;
+        float  _damp2;
+        float* _buffer;
+        int _bufSize;
+        int _bufIndex;
 };
-
+}
 #endif

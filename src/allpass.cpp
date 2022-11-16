@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Igor Zinken - https://www.igorski.nl
+ * Based on freeverb by Jezar at Dreampoint (June 2000)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,31 +20,37 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef __PARAMIDS_HEADER__
-#define __PARAMIDS_HEADER__
+ #include "allpass.h"
 
-enum
-{
-    // ids for all visual controls
-    // these identifiers are mapped to the UI in plugin.uidesc
-    // and consumed by controller.cpp to update the model
+ namespace Igorski {
 
-    kBypassId = 0, // parameter used to bypass the effect processing
+ AllPass::AllPass()
+ {
+     _bufIndex = 0;
+     setFeedback( 0.5f );
+ }
 
-// --- AUTO-GENERATED START
+ void AllPass::setBuffer( float *buf, int size )
+ {
+     _buffer  = buf;
+     _bufSize = size;
+ }
 
-    kDelayTimeId = 1,    // Delay time
-    kDelayFeedbackId = 2,    // Delay feedback
-    kDelayMixId = 3,    // Delay mix
-    kDelayHostSyncId = 4,    // Sync delay
-    kDecimatorId = 5,    // Decimation
-    kReverbId = 6,    // Freeze
-    kHarmonizeId = 7,    // Choir
-    kPitchShiftId = 8,    // Pitch shift amount
-    kFilterCutoffId = 9,    // Filter cut off
-    kFilterResonanceId = 10,    // Filter resonance
+ void AllPass::mute()
+ {
+     for ( int i = 0; i < _bufSize; i++ ) {
+         _buffer[ i ] = 0;
+     }
+ }
 
-// --- AUTO-GENERATED END
-};
+ float AllPass::getFeedback()
+ {
+     return _feedback;
+ }
 
-#endif
+ void AllPass::setFeedback( float val )
+ {
+     _feedback = val;
+ }
+
+ }

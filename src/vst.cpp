@@ -147,19 +147,19 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
                             fDelayHostSync = ( value > 0.5f );
                         break;
 
-                    case kBitDepthId:
+                    case kDecimatorId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fBitDepth = ( float ) value;
+                            fDecimator = ( float ) value;
                         break;
 
-                    case kBitCrushLfoId:
+                    case kReverbId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fBitCrushLfo = ( float ) value;
+                            fReverb = ( value > 0.5f );
                         break;
 
-                    case kBitCrushLfoDepthId:
+                    case kHarmonizeId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fBitCrushLfoDepth = ( float ) value;
+                            fHarmonize = ( float ) value;
                         break;
 
                     case kPitchShiftId:
@@ -193,11 +193,9 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
 
     if ( data.processContext != nullptr ) {
         // in case you want to do tempo synchronization with the host
-        /*
         pluginProcess->setTempo(
             data.processContext->tempo, data.processContext->timeSigNumerator, data.processContext->timeSigDenominator
         );
-        */
     }
 
     //---2) Read input events-------------
@@ -303,16 +301,16 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     if ( streamer.readInt32( savedDelayHostSync ) == false )
         return kResultFalse;
 
-    float savedBitDepth = 0.f;
-    if ( streamer.readFloat( savedBitDepth ) == false )
+    float savedDecimator = 0.f;
+    if ( streamer.readFloat( savedDecimator ) == false )
         return kResultFalse;
 
-    float savedBitCrushLfo = 0.f;
-    if ( streamer.readFloat( savedBitCrushLfo ) == false )
+    int32 savedReverb = 0;
+    if ( streamer.readInt32( savedReverb ) == false )
         return kResultFalse;
 
-    float savedBitCrushLfoDepth = 0.f;
-    if ( streamer.readFloat( savedBitCrushLfoDepth ) == false )
+    float savedHarmonize = 0.f;
+    if ( streamer.readFloat( savedHarmonize ) == false )
         return kResultFalse;
 
     float savedPitchShift = 0.f;
@@ -338,9 +336,9 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     fDelayFeedback = savedDelayFeedback;
     fDelayMix = savedDelayMix;
     fDelayHostSync = savedDelayHostSync > 0;
-    fBitDepth = savedBitDepth;
-    fBitCrushLfo = savedBitCrushLfo;
-    fBitCrushLfoDepth = savedBitCrushLfoDepth;
+    fDecimator = savedDecimator;
+    fReverb = savedReverb > 0;
+    fHarmonize = savedHarmonize;
     fPitchShift = savedPitchShift;
     fFilterCutoff = savedFilterCutoff;
     fFilterResonance = savedFilterResonance;
@@ -397,9 +395,9 @@ tresult PLUGIN_API __PLUGIN_NAME__::getState( IBStream* state )
     streamer.writeFloat( fDelayFeedback );
     streamer.writeFloat( fDelayMix );
     streamer.writeInt32( fDelayHostSync ? 1 : 0 );
-    streamer.writeFloat( fBitDepth );
-    streamer.writeFloat( fBitCrushLfo );
-    streamer.writeFloat( fBitCrushLfoDepth );
+    streamer.writeFloat( fDecimator );
+    streamer.writeInt32( fReverb ? 1 : 0 );
+    streamer.writeFloat( fHarmonize );
     streamer.writeFloat( fPitchShift );
     streamer.writeFloat( fFilterCutoff );
     streamer.writeFloat( fFilterResonance );
@@ -535,14 +533,15 @@ void __PLUGIN_NAME__::syncModel()
     pluginProcess->setDelayFeedback( fDelayFeedback );
     pluginProcess->setDelayMix( fDelayMix );
 
-    pluginProcess->bitCrusher->setAmount( fBitDepth );
-    // regraderProcess->bitCrusher->setLFO( fLFOBitResolution, fLFOBitResolutionDepth );
-    pluginProcess->filter->updateProperties( fFilterCutoff, fFilterResonance );
+    pluginProcess->decimator->setRate( fDecimator > 0.99f ? 0.49f : Calc::inverseNormalize( fDecimator ) * 0.5f );
+    pluginProcess->filter->updateProperties( fFilterCutoff, Calc::inverseNormalize( fFilterResonance ));
 
-    bool isShiftUp = Calc::toBool( fPitchShift );
+    bool isShiftUp   = Calc::toBool( fPitchShift );
     float shiftValue = isShiftUp ? Calc::scale( fPitchShift, 1.f, 2.f ) : fPitchShift + 0.5f ;
 
     pluginProcess->setPitchShift( shiftValue );
+    pluginProcess->setHarmony( fHarmonize );
+    pluginProcess->enableReverb( Calc::toBool( fReverb ));
 }
 
 }

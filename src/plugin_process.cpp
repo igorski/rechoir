@@ -38,14 +38,18 @@ PluginProcess::PluginProcess( int amountOfChannels ) {
     for ( int i = 0; i < amountOfChannels; ++i ) {
         _delayIndices[ i ] = 0;
         _pitchShifters->at( i ) = new PitchShifter( 4 );
+
+        Reverb* reverb = new Reverb();
+        reverb->setWidth( 1.f );
+        reverb->setRoomSize( 1.f );
+
+        _reverbs.push_back( reverb );
     }
     _amountOfChannels = amountOfChannels;
 
-    bitCrusher = new BitCrusher( 8, .5f, .5f );
+    decimator  = new Decimator( 16, 1.f );
     filter     = new Filter();
     limiter    = new Limiter( 10.f, 500.f, .6f );
-
-    filterPostMix = true;
 
     // these will be synced to host, see vst.cpp. here we default to 120 BPM in 4/4 time
     _tempo              = 120.0;
@@ -64,11 +68,14 @@ PluginProcess::~PluginProcess() {
     while ( !_pitchShifters->empty()) {
         delete _pitchShifters->back(), _pitchShifters->pop_back();
     }
+    while ( !_reverbs.empty() ) {
+        delete _reverbs.back(), _reverbs.pop_back();
+    }
     delete _pitchShifters;
     delete _delayBuffer;
     delete _postMixBuffer;
     delete _preMixBuffer;
-    delete bitCrusher;
+    delete decimator;
     delete filter;
     delete limiter;
 }
@@ -106,10 +113,69 @@ void PluginProcess::setDelayFeedback( float value )
     _delayFeedback = value;
 }
 
-void PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSigDenominator )
+void PluginProcess::setHarmony( float value )
 {
-    if ( _tempo == tempo && _timeSigNumerator == timeSigNumerator && _timeSigDenominator == timeSigDenominator )
+    _harmonize = value;
+
+    if ( !isHarmonized() ) {
+        setPitchShift( _pitchShift );
         return;
+    }
+
+    // determine scale by integral value
+
+    float odd  = 1.f;
+    float even = 1.f;
+    int scaled = ( int ) round( 5.f * value );
+
+    // TODO: only shifting up ?
+    switch ( scaled ) {
+        // major
+        default:
+        case 0:
+            odd  = 11; // major 7th
+            even = 4; // major 3rd
+            break;
+        // mixolydian
+        case 1:
+            odd  = 10; // minor 7th
+            even = 4; // major 3rd
+            break;
+        // augmented
+        case 2:
+            odd  = 8; // augmented 5th
+            even = 4; // major 3rd
+            break;
+        // "neutral"
+        case 3:
+            odd  = 7; // 5th
+            even = 2; // 2nd
+            break;
+        // minor
+        case 4:
+            odd  = 10; // minor 7th
+            even = 3; // minor 3rd
+            break;
+        // diminished
+        case 5:
+            odd  = 6; // diminished 5th / tritone
+            even = 3; // minor 3rd
+            break;
+    }
+    float oddPitch  = 1.f + ( odd  / 12 );
+    float evenPitch = 1.f + ( even / 12 );
+
+    for ( size_t i = 0; i < _pitchShifters->size(); ++i ) {
+        _pitchShifters->at( i )->pitchShift = ( i % 2 == 0 ) ? evenPitch : oddPitch;
+    }
+}
+
+
+bool PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSigDenominator )
+{
+    if ( _tempo == tempo && _timeSigNumerator == timeSigNumerator && _timeSigDenominator == timeSigDenominator ) {
+        return false; // no change
+    }
 
     if ( syncDelayToHost ) {
 
@@ -128,6 +194,8 @@ void PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSi
     _timeSigNumerator   = timeSigNumerator;
     _timeSigDenominator = timeSigDenominator;
     _tempo              = tempo;
+
+    return true;
 }
 
 /* protected methods */

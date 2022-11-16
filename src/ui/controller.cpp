@@ -109,26 +109,24 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
         USTRING( "Sync delay" ), 0, 1, 0, ParameterInfo::kCanAutomate, kDelayHostSyncId, unitId
     );
 
-    RangeParameter* bitDepthParam = new RangeParameter(
-        USTRING( "Resolution" ), kBitDepthId, USTRING( "%" ),
-        0.f, 1.f, 1.f,
-        0, ParameterInfo::kCanAutomate, unitId
-    );
-    parameters.addParameter( bitDepthParam );
-
-    RangeParameter* bitCrushLfoParam = new RangeParameter(
-        USTRING( "Bit crush LFO" ), kBitCrushLfoId, USTRING( "Hz" ),
-        0.f, 10.f, 0.f,
-        0, ParameterInfo::kCanAutomate, unitId
-    );
-    parameters.addParameter( bitCrushLfoParam );
-
-    RangeParameter* bitCrushLfoDepthParam = new RangeParameter(
-        USTRING( "Bit crush LFO depth" ), kBitCrushLfoDepthId, USTRING( "%" ),
+    RangeParameter* decimatorParam = new RangeParameter(
+        USTRING( "Decimation" ), kDecimatorId, USTRING( "%" ),
         0.f, 1.f, 0.f,
         0, ParameterInfo::kCanAutomate, unitId
     );
-    parameters.addParameter( bitCrushLfoDepthParam );
+    parameters.addParameter( decimatorParam );
+
+
+    parameters.addParameter(
+        USTRING( "Freeze" ), 0, 1, 0, ParameterInfo::kCanAutomate, kReverbId, unitId
+    );
+
+    RangeParameter* harmonizeParam = new RangeParameter(
+        USTRING( "Choir" ), kHarmonizeId, USTRING( "undefined" ),
+        0, 1, 0,
+        0, ParameterInfo::kCanAutomate, unitId
+    );
+    parameters.addParameter( harmonizeParam );
 
     RangeParameter* pitchShiftParam = new RangeParameter(
         USTRING( "Pitch shift amount" ), kPitchShiftId, USTRING( "%" ),
@@ -204,20 +202,20 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
         return kResultFalse;
     setParamNormalized( kDelayHostSyncId, savedDelayHostSync ? 1 : 0 );
 
-    float savedBitDepth = 1.f;
-    if ( streamer.readFloat( savedBitDepth ) == false )
+    float savedDecimator = 0.f;
+    if ( streamer.readFloat( savedDecimator ) == false )
         return kResultFalse;
-    setParamNormalized( kBitDepthId, savedBitDepth );
+    setParamNormalized( kDecimatorId, savedDecimator );
 
-    float savedBitCrushLfo = 0.f;
-    if ( streamer.readFloat( savedBitCrushLfo ) == false )
+    int32 savedReverb = 0;
+    if ( streamer.readInt32( savedReverb ) == false )
         return kResultFalse;
-    setParamNormalized( kBitCrushLfoId, savedBitCrushLfo );
+    setParamNormalized( kReverbId, savedReverb ? 1 : 0 );
 
-    float savedBitCrushLfoDepth = 0.f;
-    if ( streamer.readFloat( savedBitCrushLfoDepth ) == false )
+    float savedHarmonize = 0;
+    if ( streamer.readFloat( savedHarmonize ) == false )
         return kResultFalse;
-    setParamNormalized( kBitCrushLfoDepthId, savedBitCrushLfoDepth );
+    setParamNormalized( kHarmonizeId, savedHarmonize );
 
     float savedPitchShift = 0.5f;
     if ( streamer.readFloat( savedPitchShift ) == false )
@@ -360,17 +358,17 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
-        case kBitDepthId:
-            sprintf( text, "%.d Bits", ( int ) ( 15 * valueNormalized ) + 1 );
+        case kDecimatorId:
+            sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
-        case kBitCrushLfoId:
-            sprintf( text, "%.2f Hz", normalizedParamToPlain( tag, valueNormalized ));
+        case kReverbId:
+            sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
-        case kBitCrushLfoDepthId:
+        case kHarmonizeId:
             sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;

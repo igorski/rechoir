@@ -25,10 +25,11 @@
 
 #include "global.h"
 #include "audiobuffer.h"
-#include "bitcrusher.h"
+#include "decimator.h"
 #include "filter.h"
 #include "limiter.h"
 #include "pitchshifter.h"
+#include "reverb.h"
 #include <vector>
 
 using namespace Steinberg;
@@ -59,27 +60,34 @@ class PluginProcess {
         void setDelayFeedback( float value );
         void setDelayMix( float value );
 
-        void setPitchShift( float value ) {
-            float shift = std::fmin( 2.f, std::fmax( 0.5f, value ));
+        inline void setPitchShift( float value ) {
+            _pitchShift = std::fmin( 2.f, std::fmax( 0.5f, value ));
             for ( auto pitchShifter : *_pitchShifters ) {
-                pitchShifter->pitchShift = shift;
+                pitchShifter->pitchShift = _pitchShift;
             }
         }
 
-        // synchronize the delays tempo with the host
+        void setHarmony( float value );
+
+        bool isHarmonized() {
+            return _harmonize > 0.f;
+        }
+
+        void enableReverb( bool enabled ) {
+            _reverbEnabled = enabled;
+        }
+
+        // synchronize the delay tempo with the host
         // tempo is in BPM, time signature provided as: timeSigNumerator / timeSigDenominator (e.g. 3/4)
+        // returns true when tempo has updated, false to indicate no change was made
 
-        void setTempo( double tempo, int32 timeSigNumerator, int32 timeSigDenominator );
+        bool setTempo( double tempo, int32 timeSigNumerator, int32 timeSigDenominator );
 
-        BitCrusher* bitCrusher;
+        Decimator* decimator;
         Filter* filter;
         std::vector<PitchShifter*>* _pitchShifters;
+        std::vector<Reverb*> _reverbs;
         Limiter* limiter;
-
-        // whether effects are applied onto the input delay signal or onto
-        // the delayed signal itself (false = on input, true = on delay)
-
-        bool filterPostMix;
 
         // whether delay time is synced to hosts tempo
 
@@ -95,7 +103,12 @@ class PluginProcess {
         int _delayTime; // delay time is represented internally in buffer samples
         float _delayMix;
         float _delayFeedback;
+
         int _amountOfChannels;
+        bool _reverbEnabled = false;
+
+        float _pitchShift = 1.f;
+        float _harmonize  = 0.f;
 
         double _tempo;
         int32 _timeSigNumerator;

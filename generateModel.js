@@ -56,28 +56,23 @@ const MODEL = [
         ui: { x: 10, y: 120, w: 134, h: 21 }
     },
     {
-        name: "bitDepth",
-        descr: "Resolution",
+        name: "decimator",
+        descr: "Decimation",
         unitDescr: "%",
-        value: { min: "0.f", max: "1.f", def: "1.f", type: "percent" },
+        value: { min: "0.f", max: "1.f", def: "0.f", type: "percent" },
         ui: { x: 199, y: 165, w: 104, h: 21 },
-        // note we treat full resolution as 16-bits (but is in fact whatever host is)
-        customDescr: `sprintf( text, "%.d Bits", ( int ) ( 15 * valueNormalized ) + 1 );`
     },
     {
-        name: "bitCrushLfo",
-        descr: "Bit crush LFO",
-        unitDescr: "Hz",
-        value: { min: "0.f", max: "10.f" },
-        ui: { x: 10, y: 90, w: 134, h: 21 },
-        normalizedDescr: true
+        name: "reverb",
+        descr: "Freeze",
+        value: { min: "0", max: "1", def: "0", type: "bool" },
+        ui: { x: 215, y: 414, w: 70, h: 70 }
     },
     {
-        name: "bitCrushLfoDepth",
-        descr: "Bit crush LFO depth",
-        unitDescr: "%",
-        value: { min: "0.f", max: "1.f", type: "percent" },
-        ui: { x: 10, y: 120, w: 134, h: 21 }
+        name: "harmonize",
+        descr: "Choir",
+        value: { min: "0", max: "1", def: "0", type: "percent" },
+        ui: { x: 336, y: 439, w: 70, h: 70 }
     },
     {
         name: "pitchShift",

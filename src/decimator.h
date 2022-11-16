@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Igor Zinken - https://www.igorski.nl
+ * Copyright (c) 2013-2018 Igor Zinken - https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,31 +20,45 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef __PARAMIDS_HEADER__
-#define __PARAMIDS_HEADER__
+#ifndef __DECIMATOR_H_INCLUDED__
+#define __DECIMATOR_H_INCLUDED__
 
-enum
-{
-    // ids for all visual controls
-    // these identifiers are mapped to the UI in plugin.uidesc
-    // and consumed by controller.cpp to update the model
+#include "audiobuffer.h"
 
-    kBypassId = 0, // parameter used to bypass the effect processing
+namespace Igorski {
+class Decimator {
 
-// --- AUTO-GENERATED START
+    public:
 
-    kDelayTimeId = 1,    // Delay time
-    kDelayFeedbackId = 2,    // Delay feedback
-    kDelayMixId = 3,    // Delay mix
-    kDelayHostSyncId = 4,    // Sync delay
-    kDecimatorId = 5,    // Decimation
-    kReverbId = 6,    // Freeze
-    kHarmonizeId = 7,    // Choir
-    kPitchShiftId = 8,    // Pitch shift amount
-    kFilterCutoffId = 9,    // Filter cut off
-    kFilterResonanceId = 10,    // Filter resonance
+        Decimator( int bits, float rate );
+        ~Decimator();
 
-// --- AUTO-GENERATED END
+        // the output resolution, value between 1 - 32
+        int getBits();
+        void setBits( int value );
+
+        // decimator has an internal oscillator
+        // as the effect is applied at the peak of the cycle
+        // the range is 0 - 1 where 1 implies the original sample rate
+        float getRate();
+        void setRate( float value );
+
+        void process( float* sampleBuffer, int bufferSize );
+
+        // store/restore the processor properties
+        // this ensures that multi channel processing for a
+        // single buffer uses all properties across all channels
+
+        void store();
+        void restore();
+
+    private:
+        int _bits;
+        long _m;
+        float _rate;
+        float _accumulator;
+        float _accumulatorStored;
 };
+}
 
 #endif

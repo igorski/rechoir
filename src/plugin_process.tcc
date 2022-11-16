@@ -35,7 +35,7 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
     int i, readIndex, delayIndex, channelDelayBufferChannel;
 
     SampleType dryMix = 1.f - _delayMix;
-    int maxReadIndex  = std::min( _delayTime, _delayBuffer->bufferSize );
+    int maxReadIndex  = /*std::min( _delayTime, */_delayBuffer->bufferSize;// );
 
     // prepare the mix buffers and clone the incoming buffer contents into the pre-mix buffer
 
@@ -49,20 +49,19 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
         float* channelDelayBuffer    = _delayBuffer->getBufferForChannel( c );
         float* channelPostMixBuffer  = _postMixBuffer->getBufferForChannel( c );
 
+        Reverb* reverb = _reverbs.at( c );
+
         delayIndex = _delayIndices[ c ];
 
         // when processing the first channel, store the current effects properties
         // so each subsequent channel is processed using the same processor variables
 
         if ( c == 0 ) {
+            decimator->store();
             filter->store();
         }
 
-        // PRE MIX processing
-
-        if ( !filterPostMix ) {
-            filter->process( channelPreMixBuffer, bufferSize, c );
-        }
+        // PRE MIX processing on channelPreMixBuffer should go here
 
         // DELAY processing applied onto the temp buffer
 
@@ -97,10 +96,12 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
 
         _pitchShifters->at( c )->process( channelPostMixBuffer, bufferSize );
 
-        if ( filterPostMix ) {
-            filter->process( channelPostMixBuffer, bufferSize, c );
+        decimator->process( channelPostMixBuffer, bufferSize );
+        filter->process( channelPostMixBuffer, bufferSize, c );
+
+        if ( _reverbEnabled ) {
+            reverb->process( channelPostMixBuffer, bufferSize );
         }
-        bitCrusher->process( channelPostMixBuffer, bufferSize );
 
         // mix the input and processed post mix buffers into the output buffer
 
@@ -120,6 +121,7 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
         // prepare effects for the next channel
 
         if ( c < ( numInChannels - 1 )) {
+            decimator->restore();
             filter->restore();
         }
     }

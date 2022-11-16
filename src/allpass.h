@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2018 Igor Zinken - https://www.igorski.nl
+ * Based on freeverb by Jezar at Dreampoint (June 2000)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,42 +20,43 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef __BITCRUSHER_H_INCLUDED__
-#define __BITCRUSHER_H_INCLUDED__
+#ifndef __ALLPASS_H_INCLUDED__
+#define __ALLPASS_H_INCLUDED__
 
-#include "lfo.h"
+#include "global.h"
+#include "calc.h"
+
+using namespace Steinberg;
 
 namespace Igorski {
-class BitCrusher {
-
+class AllPass
+{
     public:
-        BitCrusher( float amount, float inputMix, float outputMix );
-        ~BitCrusher();
+        AllPass();
+        void setBuffer( float *buf, int size );
+        inline float process( float input )
+        {
+            float output;
+            float bufout = _buffer[ _bufIndex ];
+            undenormalise( bufout );
 
-        void setLFO( float LFORatePercentage, float LFODepth );
-        void process( float* inBuffer, int bufferSize );
+            output = -input + bufout;
+            _buffer[ _bufIndex ] = input + ( bufout * _feedback );
 
-        void setAmount( float value ); // range between -1 to +1
-        void setInputMix( float value );
-        void setOutputMix( float value );
-
-        LFO* lfo;
-        bool hasLFO;
+            if ( ++_bufIndex >= _bufSize ) {
+                _bufIndex = 0;
+            }
+            return output;
+        }
+        void mute();
+        float getFeedback();
+        void setFeedback( float val );
 
     private:
-        int _bits; // we scale the amount to integers in the 1-16 range
-        float _amount;
-        float _inputMix;
-        float _outputMix;
-
-        void cacheLFO();
-        void calcBits();
-        float _tempAmount;
-        float _lfoDepth;
-        float _lfoRange;
-        float _lfoMax;
-        float _lfoMin;
+        float  _feedback;
+        float* _buffer;
+        int _bufSize;
+        int _bufIndex;
 };
 }
-
 #endif
