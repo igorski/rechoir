@@ -1,7 +1,9 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2018 Igor Zinken - https://www.igorski.nl
+ * Copyright (c) 2014-2022 Igor Zinken - https://www.igorski.nl
+ *
+ * wave table generation adapted from sources by Matt @ hackmeopen.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,39 +22,30 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "lfo.h"
+#ifndef __WAVEGENERATOR_H_INCLUDED__
+#define __WAVEGENERATOR_H_INCLUDED__
+
+#include "global.h"
+#include "wavetable.h"
 
 namespace Igorski {
-
-LFO::LFO() {
-    _rate        = VST::MIN_LFO_RATE();
-    _accumulator = 0.f;
-}
-
-LFO::~LFO() {
-
-}
-
-/* public methods */
-
-float LFO::getRate()
+namespace WaveGenerator
 {
-    return _rate;
-}
+    enum WaveForms {
+        SINE,
+        TRIANGLE,
+        SAWTOOTH,
+        SQUARE
+    };
 
-void LFO::setRate( float value )
-{
-    _rate = value;
-}
+    // generate a WaveTable for given waveformType
+    // NOTE : wave table generation has high CPU demands
+    // instead of doing this during live audio synthesis, it is
+    // better to precache the WaveTables upon application start
+    // (also see TablePool for maintaining the cache)
 
-void LFO::setAccumulator( float value )
-{
-    _accumulator = value;
+    extern WaveTable* generate( WaveForms waveformType );
 }
+} // E.O namespace Igorski
 
-float LFO::getAccumulator()
-{
-    return _accumulator;
-}
-
-}
+#endif

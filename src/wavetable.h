@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2018 Igor Zinken - https://www.igorski.nl
+ * Copyright (c) 2014-2022 Igor Zinken - https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,23 +20,28 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef __LFO_H_INCLUDED__
-#define __LFO_H_INCLUDED__
+#ifndef __WAVETABLE_H_INCLUDED__
+#define __WAVETABLE_H_INCLUDED__
 
 #include "global.h"
 
 namespace Igorski {
-class LFO {
-
+class WaveTable
+{
     public:
-        LFO();
-        ~LFO();
+        WaveTable( int aTableLength, float aFrequency );
+        ~WaveTable();
 
-        float getRate();
-        void setRate( float value );
+        int tableLength;
+        float* getBuffer();
+        void setBuffer( float* aBuffer );
+
+        void setFrequency( float aFrequency );
+        float getFrequency();
+
+        bool hasContent();
 
         // accumulators are used to retrieve a sample from the wave table
-        // in other words: track the progress of the oscillator against its range
 
         float getAccumulator();
         void setAccumulator( float offset );
@@ -49,30 +54,30 @@ class LFO {
         inline float peek()
         {
             // the wave table offset to read from
-            float SR_OVER_LENGTH = VST::SAMPLE_RATE / ( float ) TABLE_SIZE;
-            int readOffset = ( _accumulator == 0.f ) ? 0 : ( int ) ( _accumulator / SR_OVER_LENGTH );
+            int readOffset = ( _accumulator == 0 ) ? 0 : ( int ) ( _accumulator / _sampleRateOverLength );
 
             // increment the accumulators read offset
-            _accumulator += _rate;
+            _accumulator += _frequency;
 
-            // keep the accumulator within the bounds of the sample frequency
+            // keep the accumulator in the bounds of the sample frequency
             if ( _accumulator > VST::SAMPLE_RATE )
                 _accumulator -= VST::SAMPLE_RATE;
 
             // return the sample present at the calculated offset within the table
-            return VST::TABLE[ readOffset ];
+            return _buffer[ readOffset ];
         }
 
-    private:
+        void cloneTable( WaveTable* waveTable );
+        WaveTable* clone();
 
-        // see Igorski::VST::LFO_TABLE;
-        static const int TABLE_SIZE = 128;
-
-        // used internally
-
-        float _rate;
+    protected:
+        float* _buffer;       // cached buffer (is a wave table)
         float _accumulator;   // is read offset in wave table buffer
+        float _frequency;     // frequency (in Hz) of waveform cycle when reading
+        float _sampleRateOverLength;
+
+        float* generateSilentBuffer( int bufferSize );
 };
-}
+} // E.O namespace Igorski
 
 #endif

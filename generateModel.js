@@ -26,6 +26,20 @@
 //     normalizedDescr: Boolean, // optional, whether to display the value in the host normalized (otherwise falls back to 0 - 1 range), defaults to false
 //     customDescr: String,      // optional, custom instruction used in controller.cpp to format value
 // }
+const gateSubdivisionFormatFn = `
+            tmpValue = Igorski::Calc::gateSubdivision( valueNormalized );
+            if ( tmpValue <= 0.5f ) {
+                sprintf( text, "%.d measures", ( int ) ( 1.f / tmpValue ));
+            } else if ( tmpValue == 1.f ) {
+                sprintf( text, "1 measure" );
+            } else if ( tmpValue == 4.f ) {
+                sprintf( text, "Quarter note" );
+            } else if ( tmpValue == 8.f || tmpValue == 16.f ) {
+                sprintf( text, "%.fth note", tmpValue );
+            } else {
+                sprintf( text, "1/%.f measure", tmpValue );
+            }`;
+
 const MODEL = [
     {
         name: "delayTime",
@@ -52,21 +66,15 @@ const MODEL = [
         name: "delayHostSync",
         descr: "Sync delay",
         unitDescr: "On/off",
-        value: { min: "0", max: "1", type: "bool" },
+        value: { min: "0", max: "1", def: "1", type: "bool" },
         ui: { x: 10, y: 120, w: 134, h: 21 }
     },
     {
-        name: "decimator",
-        descr: "Decimation",
+        name: "pitchShift",
+        descr: "Pitch shift amount",
         unitDescr: "%",
-        value: { min: "0.f", max: "1.f", def: "0.f", type: "percent" },
-        ui: { x: 199, y: 165, w: 104, h: 21 },
-    },
-    {
-        name: "reverb",
-        descr: "Freeze",
-        value: { min: "0", max: "1", def: "0", type: "bool" },
-        ui: { x: 215, y: 414, w: 70, h: 70 }
+        value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
+        ui: { x: 10, y: 150, w: 134, h: 21 }
     },
     {
         name: "harmonize",
@@ -100,11 +108,17 @@ const MODEL = [
             }`
     },
     {
-        name: "pitchShift",
-        descr: "Pitch shift amount",
+        name: "reverb",
+        descr: "Freeze",
+        value: { min: "0", max: "1", def: "0", type: "bool" },
+        ui: { x: 215, y: 414, w: 70, h: 70 }
+    },
+    {
+        name: "decimator",
+        descr: "Decimation",
         unitDescr: "%",
-        value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
-        ui: { x: 10, y: 150, w: 134, h: 21 }
+        value: { min: "0.f", max: "1.f", def: "0.f", type: "percent" },
+        ui: { x: 199, y: 165, w: 104, h: 21 },
     },
     {
         name: "filterCutoff",
@@ -119,6 +133,35 @@ const MODEL = [
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
         ui: { x: 10, y: 150, w: 134, h: 21 }
+    },
+    {
+        name: "syncChoir",
+        descr: "Sync choir",
+        value: { min: "0", max: "1", def: "0", type: "bool" },
+        ui: { x: 290, y: 246, w: 25, h: 40 }
+    },
+    // gate speeds are normalized 0 - 1 range values that translate to a 1 to 32 range (measure subdivisions)
+    {
+        name: "oddSpeed",
+        descr: "Odd channel speed",
+        unitDescr: "steps",
+        value: { min: "0.f", max: "1.f", def: "0.35f", type: "percent" },
+        ui: { x: 217, y: 157, w: 70, h: 70 },
+        customDescr: gateSubdivisionFormatFn,
+    },
+    {
+        name: "evenSpeed",
+        descr: "Even channel speed",
+        unitDescr: "steps",
+        value: { min: "0.f", max: "1.f", def: "1.f", type: "percent" },
+        ui: { x: 310, y: 157, w: 70, h: 70 },
+        customDescr: gateSubdivisionFormatFn,
+    },
+    {
+        name: "linkGates",
+        descr: "Link gates",
+        value: { min: "0", max: "1", def: "1", type: "bool" },
+        ui: { x: 290, y: 246, w: 25, h: 40 }
     },
 ];
 

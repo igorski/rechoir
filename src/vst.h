@@ -93,12 +93,16 @@ class __PLUGIN_NAME__ : public AudioEffect
         float fDelayFeedback = 0.5f;    // Delay feedback
         float fDelayMix = 0.5f;    // Delay mix
         bool fDelayHostSync = false;    // Sync delay
-        float fDecimator = 0.f;    // Decimation
-        bool fReverb = false;    // Freeze
-        float fHarmonize = 0;    // Choir
         float fPitchShift = 0.5f;    // Pitch shift amount
+        float fHarmonize = 0;    // Choir
+        bool fReverb = false;    // Freeze
+        float fDecimator = 0.f;    // Decimation
         float fFilterCutoff = 0.5f;    // Filter cut off
         float fFilterResonance = 0.5f;    // Filter resonance
+        bool fSyncChoir = false;    // Sync choir
+        float fOddSpeed = 0.35f;    // Odd channel speed
+        float fEvenSpeed = 1.f;    // Even channel speed
+        bool fLinkGates = false;    // Link gates
 
 // --- AUTO-GENERATED END
 

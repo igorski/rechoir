@@ -58,7 +58,6 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
 
         if ( c == 0 ) {
             decimator->store();
-            filter->store();
         }
 
         // PRE MIX processing on channelPreMixBuffer should go here
@@ -122,7 +121,6 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
 
         if ( c < ( numInChannels - 1 )) {
             decimator->restore();
-            filter->restore();
         }
     }
 

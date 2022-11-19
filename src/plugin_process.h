@@ -60,14 +60,9 @@ class PluginProcess {
         void setDelayFeedback( float value );
         void setDelayMix( float value );
 
-        inline void setPitchShift( float value ) {
-            _pitchShift = std::fmin( PitchShifter::OCTAVE_UP, std::fmax( PitchShifter::OCTAVE_DOWN, value ));
-            for ( auto pitchShifter : *_pitchShifters ) {
-                pitchShifter->pitchShift = _pitchShift;
-            }
-        }
-
-        void setHarmony( float value );
+        void setPitchShift( float value );
+        void setHarmony( float value, bool syncToBeat );
+        void setHarmonyStepSpeed( float oddSteps, float evenSteps, bool linkGates );
 
         bool isHarmonized() {
             return _harmonize > 0.f;
@@ -113,6 +108,11 @@ class PluginProcess {
         double _tempo;
         int32 _timeSigNumerator;
         int32 _timeSigDenominator;
+        float _fullMeasureDuration = 0.f;
+        int _fullMeasureSamples    = 0;
+        int _halfMeasureSamples    = 0;
+        int _beatSamples           = 0;
+        int _sixteenthSamples      = 0;
 
         // ensures the pre- and post mix buffers match the appropriate amount of channels
         // and buffer size. this also clones the contents of given in buffer into the pre-mix buffer
@@ -125,6 +125,11 @@ class PluginProcess {
 
         void syncDelayTime();
 
+        bool _linkedGates = false;
+        float _oddSteps   = -1.f;
+        float _evenSteps  = -1.f;
+
+        void syncPitchShifterTables( float steps, int resto );
 };
 }
 

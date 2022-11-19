@@ -37,12 +37,16 @@ enum
     kDelayFeedbackId = 2,    // Delay feedback
     kDelayMixId = 3,    // Delay mix
     kDelayHostSyncId = 4,    // Sync delay
-    kDecimatorId = 5,    // Decimation
-    kReverbId = 6,    // Freeze
-    kHarmonizeId = 7,    // Choir
-    kPitchShiftId = 8,    // Pitch shift amount
+    kPitchShiftId = 5,    // Pitch shift amount
+    kHarmonizeId = 6,    // Choir
+    kReverbId = 7,    // Freeze
+    kDecimatorId = 8,    // Decimation
     kFilterCutoffId = 9,    // Filter cut off
     kFilterResonanceId = 10,    // Filter resonance
+    kSyncChoirId = 11,    // Sync choir
+    kOddSpeedId = 12,    // Odd channel speed
+    kEvenSpeedId = 13,    // Even channel speed
+    kLinkGatesId = 14,    // Link gates
 
 // --- AUTO-GENERATED END
 };
