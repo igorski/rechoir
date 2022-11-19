@@ -130,26 +130,26 @@ void PluginProcess::setHarmony( float value )
 
     // TODO: only shifting up ?
     switch ( scaled ) {
-        // major
+        // "neutral"
         default:
         case 0:
+            odd  = 7; // 5th
+            even = 2; // 2nd
+            break;
+        // major
+        case 1:
             odd  = 11; // major 7th
             even = 4; // major 3rd
             break;
         // mixolydian
-        case 1:
+        case 2:
             odd  = 10; // minor 7th
             even = 4; // major 3rd
             break;
         // augmented
-        case 2:
+        case 3:
             odd  = 8; // augmented 5th
             even = 4; // major 3rd
-            break;
-        // "neutral"
-        case 3:
-            odd  = 7; // 5th
-            even = 2; // 2nd
             break;
         // minor
         case 4:
@@ -162,8 +162,10 @@ void PluginProcess::setHarmony( float value )
             even = 3; // minor 3rd
             break;
     }
-    float oddPitch  = 1.f + ( odd  / 12 );
-    float evenPitch = 1.f + ( even / 12 );
+    // formula for pitching down is pow( 0.94387f, -semitones )
+
+    float oddPitch  = pow( 1.05946f, odd );
+    float evenPitch = pow( 1.05946f, even );
 
     for ( size_t i = 0; i < _pitchShifters->size(); ++i ) {
         _pitchShifters->at( i )->pitchShift = ( i % 2 == 0 ) ? evenPitch : oddPitch;

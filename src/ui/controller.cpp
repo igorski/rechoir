@@ -369,7 +369,31 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             return kResultTrue;
 
         case kHarmonizeId:
-            sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
+            if ( valueNormalized == 0 ) {
+                sprintf( text, "Off" );
+            } else {
+                switch (( int ) round( 5.f * valueNormalized )) {
+                    default:
+                    case 0:
+                        sprintf( text, "Neutral (2nd, 5th)" );
+                        break;
+                    case 1:
+                        sprintf( text, "Major" );
+                        break;
+                    case 2:
+                        sprintf( text, "Mixolydian" );
+                        break;
+                    case 3:
+                        sprintf( text, "Augmented" );
+                        break;
+                    case 4:
+                        sprintf( text, "Minor" );
+                        break;
+                    case 5:
+                        sprintf( text, "Diminished" );
+                        break;
+                }
+            }
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 

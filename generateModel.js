@@ -72,7 +72,32 @@ const MODEL = [
         name: "harmonize",
         descr: "Choir",
         value: { min: "0", max: "1", def: "0", type: "percent" },
-        ui: { x: 336, y: 439, w: 70, h: 70 }
+        ui: { x: 336, y: 439, w: 70, h: 70 },
+        customDescr: `if ( valueNormalized == 0 ) {
+                sprintf( text, "Off" );
+            } else {
+                switch (( int ) round( 5.f * valueNormalized )) {
+                    default:
+                    case 0:
+                        sprintf( text, "Neutral (2nd, 5th)" );
+                        break;
+                    case 1:
+                        sprintf( text, "Major" );
+                        break;
+                    case 2:
+                        sprintf( text, "Mixolydian" );
+                        break;
+                    case 3:
+                        sprintf( text, "Augmented" );
+                        break;
+                    case 4:
+                        sprintf( text, "Minor" );
+                        break;
+                    case 5:
+                        sprintf( text, "Diminished" );
+                        break;
+                }
+            }`
     },
     {
         name: "pitchShift",

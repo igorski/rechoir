@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Igor Zinken - https://www.igorski.nl
+ * Copyright (c) 2020-2022 Igor Zinken - https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -84,7 +84,7 @@ namespace Calc {
         return value + valueToRoundTo - resto;
     }
 
-    // inverts a 0 - 1 normalized value to have 0 be the highest, 1 the lowest
+    // inverts a 0 - 1 normalized min-to-max value to have 0 be the max and 1 the min
 
     inline float inverseNormalize( float value )
     {

@@ -61,7 +61,7 @@ class PluginProcess {
         void setDelayMix( float value );
 
         inline void setPitchShift( float value ) {
-            _pitchShift = std::fmin( 2.f, std::fmax( 0.5f, value ));
+            _pitchShift = std::fmin( PitchShifter::OCTAVE_UP, std::fmax( PitchShifter::OCTAVE_DOWN, value ));
             for ( auto pitchShifter : *_pitchShifters ) {
                 pitchShifter->pitchShift = _pitchShift;
             }

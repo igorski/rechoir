@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2020 Igor Zinken - https://www.igorski.nl
+ * 2013-2022 Igor Zinken - https://www.igorski.nl
  * Based on:
  *
  * NAME: smbPitchShift.cpp
@@ -44,6 +44,12 @@ class PitchShifter
 
     public:
 
+        // pitch shift values to get exact musical intervals
+
+        static constexpr float NEUTRAL     = 1.f;
+        static constexpr float OCTAVE_DOWN = 0.5f;
+        static constexpr float OCTAVE_UP   = 2.f;
+
         /**
          * numSampsToProcess tells the routine how many samples in indata[0...
          * numSampsToProcess-1] should be pitch shifted and moved to outdata[0 ...
@@ -56,7 +62,7 @@ class PitchShifter
          * recommended for best quality. sampleRate takes the sample rate for the signal
          * in unit Hz, ie. 44100 for 44.1 kHz audio. The data passed to the routine in
          * indata[] should be in the range [-1.0, 1.0), which is also the output range
-         * for the data, make sure you scale the data accordingly (for 16bit signed integers
+         * for the data, make sure you scale the data accordingly (for 16-bit signed integers
          * you would have to divide (and multiply) by 32768)
          */
         PitchShifter( long osampAmount );

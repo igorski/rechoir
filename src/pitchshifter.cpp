@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2021 Igor Zinken - https://www.igorski.nl
+ * 2013-2022 Igor Zinken - https://www.igorski.nl
  * Based on:
  *
  * NAME: smbPitchShift.cpp
