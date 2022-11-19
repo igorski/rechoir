@@ -159,9 +159,10 @@ void PluginProcess::setHarmony( float value, bool syncToBeat )
 void PluginProcess::setHarmonyStepSpeed( float oddSteps, float evenSteps, bool linkGates )
 {
     if ( _oddSteps == oddSteps && _evenSteps == evenSteps && _linkedGates == linkGates ) {
-        return;
+       return;
     }
     bool wasLinked = _linkedGates;
+
     _linkedGates   = linkGates;
     _oddSteps      = oddSteps;
     _evenSteps     = evenSteps;

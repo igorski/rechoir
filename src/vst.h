@@ -92,7 +92,7 @@ class __PLUGIN_NAME__ : public AudioEffect
         float fDelayTime = 0.25f;    // Delay time
         float fDelayFeedback = 0.5f;    // Delay feedback
         float fDelayMix = 0.5f;    // Delay mix
-        bool fDelayHostSync = false;    // Sync delay
+        bool fDelayHostSync = true;    // Sync delay
         float fPitchShift = 0.5f;    // Pitch shift amount
         float fHarmonize = 0;    // Choir
         bool fReverb = false;    // Freeze
@@ -102,7 +102,7 @@ class __PLUGIN_NAME__ : public AudioEffect
         bool fSyncChoir = false;    // Sync choir
         float fOddSpeed = 0.35f;    // Odd channel speed
         float fEvenSpeed = 1.f;    // Even channel speed
-        bool fLinkGates = false;    // Link gates
+        bool fLinkGates = true;    // Link gates
 
 // --- AUTO-GENERATED END
 

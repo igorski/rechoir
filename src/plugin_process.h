@@ -126,8 +126,8 @@ class PluginProcess {
         void syncDelayTime();
 
         bool _linkedGates = false;
-        float _oddSteps   = -1.f;
-        float _evenSteps  = -1.f;
+        float _oddSteps   = 0.f;
+        float _evenSteps  = 0.f;
 
         void syncPitchShifterTables( float steps, int resto );
 };
