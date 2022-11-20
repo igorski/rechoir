@@ -216,6 +216,7 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
         pluginProcess->setTempo(
             data.processContext->tempo, data.processContext->timeSigNumerator, data.processContext->timeSigDenominator
         );
+        pluginProcess->setHarmonyLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
     }
 
     //---2) Read input events-------------
