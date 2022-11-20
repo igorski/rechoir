@@ -157,16 +157,16 @@
               mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
               transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
         />
-        <!-- Link gates -->
+        <!-- Link oscillators -->
         <view
-              control-tag="Unit1::linkGatesParam" class="CCheckBox" origin="290, 246" size="25, 40"
+              control-tag="Unit1::linkLFOsParam" class="CCheckBox" origin="290, 246" size="25, 40"
               max-value="1" min-value="0" default-value="1"
               background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
               boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
               draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
               autosize-to-fit="false" frame-width="1"
               mouse-enabled="true" opacity="1" round-rect-radius="0"
-              title="Link gates" transparent="false" wants-focus="true" wheel-inc-value="0.1"
+              title="Link oscillators" transparent="false" wants-focus="true" wheel-inc-value="0.1"
         />
 <!-- AUTO-GENERATED CONTROLS END -->
 
@@ -219,7 +219,7 @@
         <control-tag name="Unit1::syncChoirParam" tag="11" />
         <control-tag name="Unit1::oddSpeedParam" tag="12" />
         <control-tag name="Unit1::evenSpeedParam" tag="13" />
-        <control-tag name="Unit1::linkGatesParam" tag="14" />
+        <control-tag name="Unit1::linkLFOsParam" tag="14" />
 
 <!-- AUTO-GENERATED TAGS END -->
         <control-tag name="UI::SendMessage" tag="1000"/>

@@ -102,7 +102,7 @@ class __PLUGIN_NAME__ : public AudioEffect
         bool fSyncChoir = false;    // Sync choir
         float fOddSpeed = 0.35f;    // Odd channel speed
         float fEvenSpeed = 1.f;    // Even channel speed
-        bool fLinkGates = true;    // Link gates
+        bool fLinkLFOs = true;    // Link oscillators
 
 // --- AUTO-GENERATED END
 

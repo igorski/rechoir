@@ -158,8 +158,8 @@ const MODEL = [
         customDescr: gateSubdivisionFormatFn,
     },
     {
-        name: "linkGates",
-        descr: "Link gates",
+        name: "linkLFOs",
+        descr: "Link oscillators",
         value: { min: "0", max: "1", def: "1", type: "bool" },
         ui: { x: 290, y: 246, w: 25, h: 40 }
     },

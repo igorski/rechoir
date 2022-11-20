@@ -46,7 +46,7 @@ enum
     kSyncChoirId = 11,    // Sync choir
     kOddSpeedId = 12,    // Odd channel speed
     kEvenSpeedId = 13,    // Even channel speed
-    kLinkGatesId = 14,    // Link gates
+    kLinkLFOsId = 14,    // Link oscillators
 
 // --- AUTO-GENERATED END
 };

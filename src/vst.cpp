@@ -192,9 +192,9 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
                             fEvenSpeed = ( float ) value;
                         break;
 
-                    case kLinkGatesId:
+                    case kLinkLFOsId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fLinkGates = ( value > 0.5f );
+                            fLinkLFOs = ( value > 0.5f );
                         break;
 
 // --- AUTO-GENERATED PROCESS END
@@ -357,8 +357,8 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     if ( streamer.readFloat( savedEvenSpeed ) == false )
         return kResultFalse;
 
-    int32 savedLinkGates = 0;
-    if ( streamer.readInt32( savedLinkGates ) == false )
+    int32 savedLinkLFOs = 0;
+    if ( streamer.readInt32( savedLinkLFOs ) == false )
         return kResultFalse;
 
 
@@ -381,7 +381,7 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     fSyncChoir = savedSyncChoir > 0;
     fOddSpeed = savedOddSpeed;
     fEvenSpeed = savedEvenSpeed;
-    fLinkGates = savedLinkGates > 0;
+    fLinkLFOs = savedLinkLFOs > 0;
 
 // --- AUTO-GENERATED SETSTATE APPLY END
 
@@ -444,7 +444,7 @@ tresult PLUGIN_API __PLUGIN_NAME__::getState( IBStream* state )
     streamer.writeInt32( fSyncChoir ? 1 : 0 );
     streamer.writeFloat( fOddSpeed );
     streamer.writeFloat( fEvenSpeed );
-    streamer.writeInt32( fLinkGates ? 1 : 0 );
+    streamer.writeInt32( fLinkLFOs ? 1 : 0 );
 
 // --- AUTO-GENERATED GETSTATE END
 
@@ -584,7 +584,7 @@ void __PLUGIN_NAME__::syncModel()
 
     pluginProcess->setPitchShift( shiftValue );
     pluginProcess->setHarmony( fHarmonize, Calc::toBool( fSyncChoir ));
-    pluginProcess->setHarmonyStepSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkGates ));
+    pluginProcess->setHarmonyLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
 
     pluginProcess->decimator->setRate( fDecimator > 0.99f ? 0.49f : Calc::inverseNormalize( fDecimator ) * 0.5f );
     pluginProcess->filter->updateProperties( fFilterCutoff, Calc::inverseNormalize( fFilterResonance ));

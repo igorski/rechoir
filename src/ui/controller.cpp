@@ -171,7 +171,7 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
 
 
     parameters.addParameter(
-        USTRING( "Link gates" ), 0, 1, 1, ParameterInfo::kCanAutomate, kLinkGatesId, unitId
+        USTRING( "Link oscillators" ), 0, 1, 1, ParameterInfo::kCanAutomate, kLinkLFOsId, unitId
     );
 
 
@@ -272,10 +272,10 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
         return kResultFalse;
     setParamNormalized( kEvenSpeedId, savedEvenSpeed );
 
-    int32 savedLinkGates = 1;
-    if ( streamer.readInt32( savedLinkGates ) == false )
+    int32 savedLinkLFOs = 1;
+    if ( streamer.readInt32( savedLinkLFOs ) == false )
         return kResultFalse;
-    setParamNormalized( kLinkGatesId, savedLinkGates ? 1 : 0 );
+    setParamNormalized( kLinkLFOsId, savedLinkLFOs ? 1 : 0 );
 
 
 // --- AUTO-GENERATED SETCOMPONENTSTATE END
@@ -497,7 +497,7 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
-        case kLinkGatesId:
+        case kLinkLFOsId:
             sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;

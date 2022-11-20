@@ -105,11 +105,14 @@ class PitchShifter
                     j <<= 1;
                 }
                 if ( i < j ) {
-                    p1 = fftBuffer+i;
-                    p2 = fftBuffer+j;
-                    temp = *p1; *(p1++) = *p2;
-                    *(p2++) = temp; temp = *p1;
-                    *p1 = *p2; *p2 = temp;
+                    p1        = fftBuffer+i;
+                    p2        = fftBuffer+j;
+                    temp      = *p1;
+                    *( p1++ ) = *p2;
+                    *( p2++ ) = temp;
+                    temp      = *p1;
+                    *p1       = *p2;
+                    *p2       = temp;
                 }
             }
 
@@ -129,28 +132,33 @@ class PitchShifter
                     p2i = p2r + 1;
 
                     for ( i = j; i < doubleFftFrameSize; i += le ) {
-                        tr = *p2r * ur - *p2i * ui;
-                        ti = *p2r * ui + *p2i * ur;
-                        *p2r = *p1r - tr; *p2i = *p1i - ti;
-                        *p1r += tr; *p1i += ti;
-                        p1r += le; p1i += le;
-                        p2r += le; p2i += le;
+                        tr    = *p2r * ur - *p2i * ui;
+                        ti    = *p2r * ui + *p2i * ur;
+                        *p2r  = *p1r - tr;
+                        *p2i  = *p1i - ti;
+                        *p1r += tr;
+                        *p1i += ti;
+                        p1r  += le;
+                        p1i  += le;
+                        p2r  += le;
+                        p2i  += le;
                     }
-                    tr = ur*wr - ui*wi;
-                    ui = ur*wi + ui*wr;
+                    tr = ur * wr - ui * wi;
+                    ui = ur * wi + ui * wr;
                     ur = tr;
                 }
             }
         }
 
         WaveTable* _waveTable = nullptr;
-        float _isOpen = false;
-        bool _syncScaleToBeat = false;
-        VST::Scale _scale = VST::Scale::NEUTRAL;
-        int _noteIndex = 0;
+
+        float _isOpen        = false;
+        VST::Scale _scale    = VST::Scale::NEUTRAL;
+        bool _syncScaleToLFO = false;
+        int _noteIndex       = 0;
 
         void alignPitchToScaleNote();
-        void handleBeatTrigger();
+        void handleLFOBeatTrigger();
 };
 } // E.O. namespace Igorski
 

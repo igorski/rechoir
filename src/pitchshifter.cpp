@@ -81,7 +81,7 @@ void PitchShifter::setScale( VST::Scale scale, bool syncActive )
         _scale = scale;
         alignPitchToScaleNote();
     }
-    _syncScaleToBeat = syncActive;
+    _syncScaleToLFO = syncActive;
 }
 
 void PitchShifter::process( float* channelBuffer, int bufferSize )
@@ -110,10 +110,10 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
     {
         // run the beat sync
 
-        float gateLevel = _waveTable->peek();
+        float lfoLevel = _waveTable->peek();
 
-        if (( _isOpen && gateLevel < 0 ) || ( !_isOpen && gateLevel > 0 )) {
-            handleBeatTrigger();
+        if (( _isOpen && lfoLevel < 0 ) || ( !_isOpen && lfoLevel > 0 )) {
+            handleLFOBeatTrigger();
         }
 
         /* As long as we have not yet collected enough data just read in */
@@ -268,11 +268,11 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
 
 /* private methods */
 
-void PitchShifter::handleBeatTrigger()
+void PitchShifter::handleLFOBeatTrigger()
 {
-    _isOpen = !_isOpen; // update gate status
+    _isOpen = !_isOpen; // update LFO "gate" status
 
-    if ( !_syncScaleToBeat ) {
+    if ( !_syncScaleToLFO ) {
         return;
     }
 

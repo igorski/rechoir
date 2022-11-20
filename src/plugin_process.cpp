@@ -70,7 +70,8 @@ PluginProcess::PluginProcess( int amountOfChannels ) {
     _postMixBuffer = 0;
 }
 
-PluginProcess::~PluginProcess() {
+PluginProcess::~PluginProcess()
+{
     delete[] _delayIndices;
     while ( !_pitchShifters->empty()) {
         delete _pitchShifters->back(), _pitchShifters->pop_back();
@@ -156,21 +157,21 @@ void PluginProcess::setHarmony( float value, bool syncToBeat )
     }
 }
 
-void PluginProcess::setHarmonyStepSpeed( float oddSteps, float evenSteps, bool linkGates )
+void PluginProcess::setHarmonyLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs )
 {
-    if ( _oddSteps == oddSteps && _evenSteps == evenSteps && _linkedGates == linkGates ) {
-       return;
+    if ( _oddSteps == oddSteps && _evenSteps == evenSteps && _linkedLFOs == linkLFOs ) {
+       // return;
     }
-    bool wasLinked = _linkedGates;
+    bool wasLinked = _linkedLFOs;
 
-    _linkedGates   = linkGates;
-    _oddSteps      = oddSteps;
-    _evenSteps     = evenSteps;
+    _linkedLFOs = linkLFOs;
+    _oddSteps   = oddSteps;
+    _evenSteps  = evenSteps;
 
-    // in case the gate speeds are newly synchronized, align the oscillator accumulators
-    // TODO should we align the note indices between all channels when gates are linked?
+    // in case the LFO speeds are newly synchronized, align the oscillator accumulators
+    // TODO should we align the note indices between all channels when LFOs are linked?
 
-    if ( linkGates && !wasLinked ) {
+    if ( linkLFOs && !wasLinked ) {
         for ( size_t i = 0; i < _amountOfChannels; ++i ) {
             bool isEvenChannel = ( i % 2 ) == 1;
             if ( isEvenChannel ) {
@@ -180,7 +181,7 @@ void PluginProcess::setHarmonyStepSpeed( float oddSteps, float evenSteps, bool l
         }
     }
     syncPitchShifterTables( oddSteps, 0 );
-    syncPitchShifterTables( linkGates ? oddSteps : evenSteps, 1 );
+    syncPitchShifterTables( linkLFOs ? oddSteps : evenSteps, 1 );
 }
 
 bool PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSigDenominator )

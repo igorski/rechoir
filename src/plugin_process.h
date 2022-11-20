@@ -62,7 +62,7 @@ class PluginProcess {
 
         void setPitchShift( float value );
         void setHarmony( float value, bool syncToBeat );
-        void setHarmonyStepSpeed( float oddSteps, float evenSteps, bool linkGates );
+        void setHarmonyLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs );
 
         bool isHarmonized() {
             return _harmonize > 0.f;
@@ -125,9 +125,9 @@ class PluginProcess {
 
         void syncDelayTime();
 
-        bool _linkedGates = false;
-        float _oddSteps   = 0.f;
-        float _evenSteps  = 0.f;
+        bool _linkedLFOs = false;
+        float _oddSteps  = 0.f;
+        float _evenSteps = 0.f;
 
         void syncPitchShifterTables( float steps, int resto );
 };
