@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "../global.h"
+#include "../calc.h"
 #include "controller.h"
 #include "uimessagecontroller.h"
 #include "../paramids.h"
@@ -106,20 +107,15 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
 
 
     parameters.addParameter(
-        USTRING( "Sync delay" ), 0, 1, 0, ParameterInfo::kCanAutomate, kDelayHostSyncId, unitId
+        USTRING( "Sync delay" ), 0, 1, 1, ParameterInfo::kCanAutomate, kDelayHostSyncId, unitId
     );
 
-    RangeParameter* decimatorParam = new RangeParameter(
-        USTRING( "Decimation" ), kDecimatorId, USTRING( "%" ),
-        0.f, 1.f, 0.f,
+    RangeParameter* pitchShiftParam = new RangeParameter(
+        USTRING( "Pitch shift amount" ), kPitchShiftId, USTRING( "%" ),
+        0.f, 1.f, 0.5f,
         0, ParameterInfo::kCanAutomate, unitId
     );
-    parameters.addParameter( decimatorParam );
-
-
-    parameters.addParameter(
-        USTRING( "Freeze" ), 0, 1, 0, ParameterInfo::kCanAutomate, kReverbId, unitId
-    );
+    parameters.addParameter( pitchShiftParam );
 
     RangeParameter* harmonizeParam = new RangeParameter(
         USTRING( "Choir" ), kHarmonizeId, USTRING( "undefined" ),
@@ -128,12 +124,17 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
     );
     parameters.addParameter( harmonizeParam );
 
-    RangeParameter* pitchShiftParam = new RangeParameter(
-        USTRING( "Pitch shift amount" ), kPitchShiftId, USTRING( "%" ),
-        0.f, 1.f, 0.5f,
+
+    parameters.addParameter(
+        USTRING( "Freeze" ), 0, 1, 0, ParameterInfo::kCanAutomate, kReverbId, unitId
+    );
+
+    RangeParameter* decimatorParam = new RangeParameter(
+        USTRING( "Decimation" ), kDecimatorId, USTRING( "%" ),
+        0.f, 1.f, 0.f,
         0, ParameterInfo::kCanAutomate, unitId
     );
-    parameters.addParameter( pitchShiftParam );
+    parameters.addParameter( decimatorParam );
 
     RangeParameter* filterCutoffParam = new RangeParameter(
         USTRING( "Filter cut off" ), kFilterCutoffId, USTRING( "%" ),
@@ -148,6 +149,30 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
         0, ParameterInfo::kCanAutomate, unitId
     );
     parameters.addParameter( filterResonanceParam );
+
+
+    parameters.addParameter(
+        USTRING( "Sync choir" ), 0, 1, 0, ParameterInfo::kCanAutomate, kSyncChoirId, unitId
+    );
+
+    RangeParameter* oddSpeedParam = new RangeParameter(
+        USTRING( "Odd channel speed" ), kOddSpeedId, USTRING( "steps" ),
+        0.f, 1.f, 0.35f,
+        0, ParameterInfo::kCanAutomate, unitId
+    );
+    parameters.addParameter( oddSpeedParam );
+
+    RangeParameter* evenSpeedParam = new RangeParameter(
+        USTRING( "Even channel speed" ), kEvenSpeedId, USTRING( "steps" ),
+        0.f, 1.f, 1.f,
+        0, ParameterInfo::kCanAutomate, unitId
+    );
+    parameters.addParameter( evenSpeedParam );
+
+
+    parameters.addParameter(
+        USTRING( "Link oscillators" ), 0, 1, 1, ParameterInfo::kCanAutomate, kLinkLFOsId, unitId
+    );
 
 
 // --- AUTO-GENERATED END
@@ -197,30 +222,30 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
         return kResultFalse;
     setParamNormalized( kDelayMixId, savedDelayMix );
 
-    int32 savedDelayHostSync = 0;
+    int32 savedDelayHostSync = 1;
     if ( streamer.readInt32( savedDelayHostSync ) == false )
         return kResultFalse;
     setParamNormalized( kDelayHostSyncId, savedDelayHostSync ? 1 : 0 );
 
-    float savedDecimator = 0.f;
-    if ( streamer.readFloat( savedDecimator ) == false )
+    float savedPitchShift = 0.5f;
+    if ( streamer.readFloat( savedPitchShift ) == false )
         return kResultFalse;
-    setParamNormalized( kDecimatorId, savedDecimator );
-
-    int32 savedReverb = 0;
-    if ( streamer.readInt32( savedReverb ) == false )
-        return kResultFalse;
-    setParamNormalized( kReverbId, savedReverb ? 1 : 0 );
+    setParamNormalized( kPitchShiftId, savedPitchShift );
 
     float savedHarmonize = 0;
     if ( streamer.readFloat( savedHarmonize ) == false )
         return kResultFalse;
     setParamNormalized( kHarmonizeId, savedHarmonize );
 
-    float savedPitchShift = 0.5f;
-    if ( streamer.readFloat( savedPitchShift ) == false )
+    int32 savedReverb = 0;
+    if ( streamer.readInt32( savedReverb ) == false )
         return kResultFalse;
-    setParamNormalized( kPitchShiftId, savedPitchShift );
+    setParamNormalized( kReverbId, savedReverb ? 1 : 0 );
+
+    float savedDecimator = 0.f;
+    if ( streamer.readFloat( savedDecimator ) == false )
+        return kResultFalse;
+    setParamNormalized( kDecimatorId, savedDecimator );
 
     float savedFilterCutoff = 0.5f;
     if ( streamer.readFloat( savedFilterCutoff ) == false )
@@ -231,6 +256,26 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
     if ( streamer.readFloat( savedFilterResonance ) == false )
         return kResultFalse;
     setParamNormalized( kFilterResonanceId, savedFilterResonance );
+
+    int32 savedSyncChoir = 0;
+    if ( streamer.readInt32( savedSyncChoir ) == false )
+        return kResultFalse;
+    setParamNormalized( kSyncChoirId, savedSyncChoir ? 1 : 0 );
+
+    float savedOddSpeed = 0.35f;
+    if ( streamer.readFloat( savedOddSpeed ) == false )
+        return kResultFalse;
+    setParamNormalized( kOddSpeedId, savedOddSpeed );
+
+    float savedEvenSpeed = 1.f;
+    if ( streamer.readFloat( savedEvenSpeed ) == false )
+        return kResultFalse;
+    setParamNormalized( kEvenSpeedId, savedEvenSpeed );
+
+    int32 savedLinkLFOs = 1;
+    if ( streamer.readInt32( savedLinkLFOs ) == false )
+        return kResultFalse;
+    setParamNormalized( kLinkLFOsId, savedLinkLFOs ? 1 : 0 );
 
 
 // --- AUTO-GENERATED SETCOMPONENTSTATE END
@@ -332,6 +377,7 @@ tresult PLUGIN_API PluginController::setParamNormalized( ParamID tag, ParamValue
 tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamValue valueNormalized, String128 string )
 {
     char text[32];
+    float tmpValue;
     // these controls are floating point values in 0 - 1 range, we can
     // simply read the normalized value which is in the same range
     switch ( tag )
@@ -358,13 +404,8 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
-        case kDecimatorId:
+        case kPitchShiftId:
             sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
-            Steinberg::UString( string, 128 ).fromAscii( text );
-            return kResultTrue;
-
-        case kReverbId:
-            sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
@@ -397,7 +438,12 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
-        case kPitchShiftId:
+        case kReverbId:
+            sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
+            Steinberg::UString( string, 128 ).fromAscii( text );
+            return kResultTrue;
+
+        case kDecimatorId:
             sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
@@ -409,6 +455,50 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
 
         case kFilterResonanceId:
             sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
+            Steinberg::UString( string, 128 ).fromAscii( text );
+            return kResultTrue;
+
+        case kSyncChoirId:
+            sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
+            Steinberg::UString( string, 128 ).fromAscii( text );
+            return kResultTrue;
+
+        case kOddSpeedId:
+            
+            tmpValue = Igorski::Calc::gateSubdivision( valueNormalized );
+            if ( tmpValue <= 0.5f ) {
+                sprintf( text, "%.d measures", ( int ) ( 1.f / tmpValue ));
+            } else if ( tmpValue == 1.f ) {
+                sprintf( text, "1 measure" );
+            } else if ( tmpValue == 4.f ) {
+                sprintf( text, "Quarter note" );
+            } else if ( tmpValue == 8.f || tmpValue == 16.f ) {
+                sprintf( text, "%.fth note", tmpValue );
+            } else {
+                sprintf( text, "1/%.f measure", tmpValue );
+            }
+            Steinberg::UString( string, 128 ).fromAscii( text );
+            return kResultTrue;
+
+        case kEvenSpeedId:
+            
+            tmpValue = Igorski::Calc::gateSubdivision( valueNormalized );
+            if ( tmpValue <= 0.5f ) {
+                sprintf( text, "%.d measures", ( int ) ( 1.f / tmpValue ));
+            } else if ( tmpValue == 1.f ) {
+                sprintf( text, "1 measure" );
+            } else if ( tmpValue == 4.f ) {
+                sprintf( text, "Quarter note" );
+            } else if ( tmpValue == 8.f || tmpValue == 16.f ) {
+                sprintf( text, "%.fth note", tmpValue );
+            } else {
+                sprintf( text, "1/%.f measure", tmpValue );
+            }
+            Steinberg::UString( string, 128 ).fromAscii( text );
+            return kResultTrue;
+
+        case kLinkLFOsId:
+            sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 

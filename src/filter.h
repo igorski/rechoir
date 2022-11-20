@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2018 Igor Zinken - https://www.igorski.nl
+ * Copyright (c) 2013-2022 Igor Zinken - https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,7 +24,6 @@
 #define __FILTER_H_INCLUDED__
 
 #include "global.h"
-#include "lfo.h"
 #include <math.h>
 
 namespace Igorski {
@@ -38,44 +37,18 @@ class Filter {
         float getCutoff();
         void  setResonance( float resonance );
         float getResonance();
-        void setDepth( float depth );
-        float getDepth();
-        void setLFO( bool enabled );
 
         void calculateParameters();
 
         // update Filter properties, the values here are in normalized 0 - 1 range
-        void updateProperties( float cutoffPercentage, float resonancePercentage, float LFORatePercentage, float fLFODepth );
-        void updateProperties( float cutoffPercentage, float resonancePercentage ) {
-            updateProperties( cutoffPercentage, resonancePercentage, 0.f, 0.f );
-        }
-        
+        void updateProperties( float cutoffPercentage, float resonancePercentage );
+
         // apply filter to incoming sampleBuffer contents
         void process( float* sampleBuffer, int bufferSize, int c );
 
-        LFO* lfo;
-
-        // store/restore the processor properties
-        // this ensures that multi channel processing for a
-        // single buffer uses all properties across all channels
-
-        void store();
-        void restore();
-
     private:
         float _cutoff;
-        float _tempCutoff;
         float _resonance;
-        float _depth;
-        float _lfoMin;
-        float _lfoMax;
-        float _lfoRange;
-        bool  _hasLFO;
-
-        // used internally
-
-        float _accumulatorStored;
-        float _tempCutoffStored;
 
         float _a1;
         float _a2;
@@ -88,8 +61,6 @@ class Filter {
         float* _in2;
         float* _out1;
         float* _out2;
-
-        void cacheLFOProperties();
 };
 }
 

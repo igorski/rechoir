@@ -22,11 +22,18 @@
  */
 #include "plugin_process.h"
 #include "calc.h"
+#include "tablepool.h"
+#include "waveforms.h"
 #include <math.h>
 
 namespace Igorski {
 
 PluginProcess::PluginProcess( int amountOfChannels ) {
+
+    // cache the waveforms (as sample rate is known to be accurate on PluginProcess construction)
+
+    TablePool::setTable( WaveGenerator::generate( WaveGenerator::WaveForms::SQUARE ), WaveGenerator::WaveForms::SQUARE );
+
     _delayTime     = 0;
     _delayMix      = .5f;
     _delayFeedback = .1f;
@@ -37,7 +44,7 @@ PluginProcess::PluginProcess( int amountOfChannels ) {
 
     for ( int i = 0; i < amountOfChannels; ++i ) {
         _delayIndices[ i ] = 0;
-        _pitchShifters->at( i ) = new PitchShifter( 4 );
+        _pitchShifters->at( i ) = new PitchShifter( 4, i );
 
         Reverb* reverb = new Reverb();
         reverb->setWidth( 1.f );
@@ -63,7 +70,8 @@ PluginProcess::PluginProcess( int amountOfChannels ) {
     _postMixBuffer = 0;
 }
 
-PluginProcess::~PluginProcess() {
+PluginProcess::~PluginProcess()
+{
     delete[] _delayIndices;
     while ( !_pitchShifters->empty()) {
         delete _pitchShifters->back(), _pitchShifters->pop_back();
@@ -78,6 +86,8 @@ PluginProcess::~PluginProcess() {
     delete decimator;
     delete filter;
     delete limiter;
+
+    TablePool::flush();
 }
 
 /* setters */
@@ -113,7 +123,24 @@ void PluginProcess::setDelayFeedback( float value )
     _delayFeedback = value;
 }
 
-void PluginProcess::setHarmony( float value )
+void PluginProcess::setPitchShift( float value )
+{
+    float pitch = std::fmin( PitchShifter::OCTAVE_UP, std::fmax( PitchShifter::OCTAVE_DOWN, value ));
+    if ( pitch == _pitchShift ) {
+        return;
+    }
+
+    _pitchShift = pitch;
+
+    if ( _harmonize ) {
+        return;
+    }
+    for ( auto pitchShifter : *_pitchShifters ) {
+        pitchShifter->pitchShift = _pitchShift;
+    }
+}
+
+void PluginProcess::setHarmony( float value, bool syncToBeat )
 {
     _harmonize = value;
 
@@ -123,55 +150,39 @@ void PluginProcess::setHarmony( float value )
     }
 
     // determine scale by integral value
-
-    float odd  = 1.f;
-    float even = 1.f;
-    int scaled = ( int ) round( 5.f * value );
-
-    // TODO: only shifting up ?
-    switch ( scaled ) {
-        // "neutral"
-        default:
-        case 0:
-            odd  = 7; // 5th
-            even = 2; // 2nd
-            break;
-        // major
-        case 1:
-            odd  = 11; // major 7th
-            even = 4; // major 3rd
-            break;
-        // mixolydian
-        case 2:
-            odd  = 10; // minor 7th
-            even = 4; // major 3rd
-            break;
-        // augmented
-        case 3:
-            odd  = 8; // augmented 5th
-            even = 4; // major 3rd
-            break;
-        // minor
-        case 4:
-            odd  = 10; // minor 7th
-            even = 3; // minor 3rd
-            break;
-        // diminished
-        case 5:
-            odd  = 6; // diminished 5th / tritone
-            even = 3; // minor 3rd
-            break;
-    }
-    // formula for pitching down is pow( 0.94387f, -semitones )
-
-    float oddPitch  = pow( 1.05946f, odd );
-    float evenPitch = pow( 1.05946f, even );
+    VST::Scale scale = static_cast<VST::Scale>(( int ) round( 5.f * value ));
 
     for ( size_t i = 0; i < _pitchShifters->size(); ++i ) {
-        _pitchShifters->at( i )->pitchShift = ( i % 2 == 0 ) ? evenPitch : oddPitch;
+        _pitchShifters->at( i )->setScale( scale, syncToBeat );
     }
 }
 
+void PluginProcess::setHarmonyLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs )
+{
+    if ( _oddSteps == oddSteps && _evenSteps == evenSteps && _linkedLFOs == linkLFOs ) {
+       // return;
+    }
+    bool wasLinked = _linkedLFOs;
+
+    _linkedLFOs = linkLFOs;
+    _oddSteps   = oddSteps;
+    _evenSteps  = evenSteps;
+
+    // in case the LFO speeds are newly synchronized, align the oscillator accumulators
+    // TODO should we align the note indices between all channels when LFOs are linked?
+
+    if ( linkLFOs && !wasLinked ) {
+        for ( size_t i = 0; i < _amountOfChannels; ++i ) {
+            bool isEvenChannel = ( i % 2 ) == 1;
+            if ( isEvenChannel ) {
+                float lastAccumulator = _pitchShifters->at( i - 1 )->getWaveTable()->getAccumulator();
+                _pitchShifters->at( i )->getWaveTable()->setAccumulator( lastAccumulator );
+            }
+        }
+    }
+    syncPitchShifterTables( oddSteps, 0 );
+    syncPitchShifterTables( linkLFOs ? oddSteps : evenSteps, 1 );
+}
 
 bool PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSigDenominator )
 {
@@ -197,6 +208,12 @@ bool PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSi
     _timeSigDenominator = timeSigDenominator;
     _tempo              = tempo;
 
+    _fullMeasureDuration = ( 60.f / _tempo ) * _timeSigDenominator; // seconds per measure
+    _fullMeasureSamples  = Calc::secondsToBuffer( _fullMeasureDuration ); // samples per measure
+    _beatSamples         = ceil( _fullMeasureSamples / _timeSigDenominator ); // samples per beat
+    _halfMeasureSamples  = ceil( _fullMeasureSamples / 2 ); // samples per half measure
+    _sixteenthSamples    = ceil( _fullMeasureSamples / 16 ); // samples per 16th note
+
     return true;
 }
 
@@ -213,6 +230,18 @@ void PluginProcess::syncDelayTime()
     int subdivision = 32;
 
     _delayTime = Calc::roundTo( _delayTime, fullMeasureSamples / subdivision );
+}
+
+void PluginProcess::syncPitchShifterTables( float steps, int resto )
+{
+    // (1.f / measureDuration value) converts seconds to cycles in Hertz
+    float value = 1.f / ( _fullMeasureDuration / Calc::gateSubdivision( steps ));
+
+    for ( size_t i = 0; i < _amountOfChannels; ++i ) {
+        if (( i % 2 ) == resto ) {
+            _pitchShifters->at( i )->getWaveTable()->setFrequency( value );
+        }
+    }
 }
 
 }

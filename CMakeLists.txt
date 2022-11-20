@@ -112,8 +112,6 @@ set(vst_sources
     src/decimator.cpp
     src/filter.h
     src/filter.cpp
-    src/lfo.h
-    src/lfo.cpp
     src/limiter.h
     src/limiter.cpp
     src/paramids.h
@@ -123,10 +121,17 @@ set(vst_sources
     src/plugin_process.cpp
     src/reverb.h
     src/reverb.cpp
+    src/tablepool.h
+    src/tablepool.cpp
     src/vst.h
     src/vst.cpp
     src/vstentry.cpp
     src/version.h
+    src/waveforms.h
+    src/wavegenerator.h
+    src/wavegenerator.cpp
+    src/wavetable.h
+    src/wavetable.cpp
     src/ui/controller.h
     src/ui/controller.cpp
     src/ui/uimessagecontroller.h

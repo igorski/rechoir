@@ -29,14 +29,18 @@
  */
 #include "pitchshifter.h"
 #include "global.h"
+#include "tablepool.h"
+#include "wavegenerator.h"
 
 namespace Igorski {
 
 /* constructors / destructors */
 
-PitchShifter::PitchShifter( long osampAmount ) : pitchShift( 1.0f ), gRover( false )
+PitchShifter::PitchShifter( long osampAmount, int instanceNum )
 {
     osamp = std::fmax( 4L, osampAmount ); // at least 4 for moderate scaling, 32 for max. quality
+
+    _noteIndex = instanceNum % VST::NOTES_IN_SCALE;
 
     stepSize      = FFT_FRAME_SIZE / osamp;
     freqPerBin    = ( float ) VST::SAMPLE_RATE / ( float ) FFT_FRAME_SIZE;
@@ -53,20 +57,38 @@ PitchShifter::PitchShifter( long osampAmount ) : pitchShift( 1.0f ), gRover( fal
     memset( gOutputAccum, 0, sizeof( float ) * 2 * MAX_FRAME_LENGTH );
     memset( gAnaFreq,     0, sizeof( float ) * MAX_FRAME_LENGTH );
     memset( gAnaMagn,     0, sizeof( float ) * MAX_FRAME_LENGTH );
+
+    // setup square wave based beat LFO to adjust harmony
+
+    _waveTable = TablePool::getTable( WaveGenerator::WaveForms::SQUARE )->clone();
 }
 
 PitchShifter::~PitchShifter()
 {
-
+    delete _waveTable;
 }
 
 /* public methods */
+
+WaveTable* PitchShifter::getWaveTable()
+{
+    return _waveTable;
+}
+
+void PitchShifter::setScale( VST::Scale scale, bool syncActive )
+{
+    if ( scale != _scale ) {
+        _scale = scale;
+        alignPitchToScaleNote();
+    }
+    _syncScaleToLFO = syncActive;
+}
 
 void PitchShifter::process( float* channelBuffer, int bufferSize )
 {
     // pitch shifted to "normal" ? omit processing and save CPU cycles
 
-    if ( pitchShift == 1.0f ) {
+    if ( pitchShift == UNCHANGED ) {
         return;
     }
 
@@ -86,6 +108,14 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
 
     for ( i = 0; i < bufferSize; ++i )
     {
+        // run the beat sync
+
+        float lfoLevel = _waveTable->peek();
+
+        if (( _isOpen && lfoLevel < 0 ) || ( !_isOpen && lfoLevel > 0 )) {
+            handleLFOBeatTrigger();
+        }
+
         /* As long as we have not yet collected enough data just read in */
 
         gInFIFO[ gRover ]  = channelBuffer[ i ];
@@ -234,6 +264,31 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             }
         }
     }
+}
+
+/* private methods */
+
+void PitchShifter::handleLFOBeatTrigger()
+{
+    _isOpen = !_isOpen; // update LFO "gate" status
+
+    if ( !_syncScaleToLFO ) {
+        return;
+    }
+
+    // update current shift
+
+    alignPitchToScaleNote();
+
+    if ( ++_noteIndex >= VST::NOTES_IN_SCALE ) {
+        _noteIndex = 0;
+    }
+}
+
+void PitchShifter::alignPitchToScaleNote()
+{
+    int interval = VST::SCALE_NOTES[ _scale ][ _noteIndex ];
+    pitchShift = ( interval >= 0 ) ? pow( 1.05946f, interval ) : pow( 0.94387f, interval );
 }
 
 } // E.O. namespace Igorski

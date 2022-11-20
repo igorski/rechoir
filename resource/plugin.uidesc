@@ -50,7 +50,7 @@
         <!-- Sync delay -->
         <view
               control-tag="Unit1::delayHostSyncParam" class="CCheckBox" origin="10, 120" size="134, 21"
-              max-value="1" min-value="0" default-value="0"
+              max-value="1" min-value="0" default-value="1"
               background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
               boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
               draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
@@ -58,10 +58,21 @@
               mouse-enabled="true" opacity="1" round-rect-radius="0"
               title="Sync delay" transparent="false" wants-focus="true" wheel-inc-value="0.1"
         />
-        <!-- Decimation -->
+        <!-- Pitch shift amount -->
         <view
-              control-tag="Unit1::decimatorParam" class="CSlider" origin="199, 165" size="104, 21"
-              max-value="1.f" min-value="0.f" default-value="0.f"
+              control-tag="Unit1::pitchShiftParam" class="CSlider" origin="10, 150" size="134, 21"
+              max-value="1.f" min-value="0.f" default-value="0.5f"
+              background-offset="0, 0" bitmap="slider_background"
+              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
+              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
+              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
+              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
+              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+        />
+        <!-- Choir -->
+        <view
+              control-tag="Unit1::harmonizeParam" class="CSlider" origin="336, 439" size="70, 70"
+              max-value="1" min-value="0" default-value="0"
               background-offset="0, 0" bitmap="slider_background"
               bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
               draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
@@ -80,21 +91,10 @@
               mouse-enabled="true" opacity="1" round-rect-radius="0"
               title="Freeze" transparent="false" wants-focus="true" wheel-inc-value="0.1"
         />
-        <!-- Choir -->
+        <!-- Decimation -->
         <view
-              control-tag="Unit1::harmonizeParam" class="CSlider" origin="336, 439" size="70, 70"
-              max-value="1" min-value="0" default-value="0"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
-        />
-        <!-- Pitch shift amount -->
-        <view
-              control-tag="Unit1::pitchShiftParam" class="CSlider" origin="10, 150" size="134, 21"
-              max-value="1.f" min-value="0.f" default-value="0.5f"
+              control-tag="Unit1::decimatorParam" class="CSlider" origin="199, 165" size="104, 21"
+              max-value="1.f" min-value="0.f" default-value="0.f"
               background-offset="0, 0" bitmap="slider_background"
               bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
               draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
@@ -123,6 +123,50 @@
               draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
               mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
               transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+        />
+        <!-- Sync choir -->
+        <view
+              control-tag="Unit1::syncChoirParam" class="CCheckBox" origin="290, 246" size="25, 40"
+              max-value="1" min-value="0" default-value="0"
+              background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
+              boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
+              draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
+              autosize-to-fit="false" frame-width="1"
+              mouse-enabled="true" opacity="1" round-rect-radius="0"
+              title="Sync choir" transparent="false" wants-focus="true" wheel-inc-value="0.1"
+        />
+        <!-- Odd channel speed -->
+        <view
+              control-tag="Unit1::oddSpeedParam" class="CSlider" origin="217, 157" size="70, 70"
+              max-value="1.f" min-value="0.f" default-value="0.35f"
+              background-offset="0, 0" bitmap="slider_background"
+              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
+              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
+              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
+              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
+              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+        />
+        <!-- Even channel speed -->
+        <view
+              control-tag="Unit1::evenSpeedParam" class="CSlider" origin="310, 157" size="70, 70"
+              max-value="1.f" min-value="0.f" default-value="1.f"
+              background-offset="0, 0" bitmap="slider_background"
+              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
+              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
+              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
+              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
+              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+        />
+        <!-- Link oscillators -->
+        <view
+              control-tag="Unit1::linkLFOsParam" class="CCheckBox" origin="290, 246" size="25, 40"
+              max-value="1" min-value="0" default-value="1"
+              background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
+              boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
+              draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
+              autosize-to-fit="false" frame-width="1"
+              mouse-enabled="true" opacity="1" round-rect-radius="0"
+              title="Link oscillators" transparent="false" wants-focus="true" wheel-inc-value="0.1"
         />
 <!-- AUTO-GENERATED CONTROLS END -->
 
@@ -166,12 +210,16 @@
         <control-tag name="Unit1::delayFeedbackParam" tag="2" />
         <control-tag name="Unit1::delayMixParam" tag="3" />
         <control-tag name="Unit1::delayHostSyncParam" tag="4" />
-        <control-tag name="Unit1::decimatorParam" tag="5" />
-        <control-tag name="Unit1::reverbParam" tag="6" />
-        <control-tag name="Unit1::harmonizeParam" tag="7" />
-        <control-tag name="Unit1::pitchShiftParam" tag="8" />
+        <control-tag name="Unit1::pitchShiftParam" tag="5" />
+        <control-tag name="Unit1::harmonizeParam" tag="6" />
+        <control-tag name="Unit1::reverbParam" tag="7" />
+        <control-tag name="Unit1::decimatorParam" tag="8" />
         <control-tag name="Unit1::filterCutoffParam" tag="9" />
         <control-tag name="Unit1::filterResonanceParam" tag="10" />
+        <control-tag name="Unit1::syncChoirParam" tag="11" />
+        <control-tag name="Unit1::oddSpeedParam" tag="12" />
+        <control-tag name="Unit1::evenSpeedParam" tag="13" />
+        <control-tag name="Unit1::linkLFOsParam" tag="14" />
 
 <!-- AUTO-GENERATED TAGS END -->
         <control-tag name="UI::SendMessage" tag="1000"/>

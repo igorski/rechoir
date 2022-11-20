@@ -147,14 +147,9 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
                             fDelayHostSync = ( value > 0.5f );
                         break;
 
-                    case kDecimatorId:
+                    case kPitchShiftId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fDecimator = ( float ) value;
-                        break;
-
-                    case kReverbId:
-                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fReverb = ( value > 0.5f );
+                            fPitchShift = ( float ) value;
                         break;
 
                     case kHarmonizeId:
@@ -162,9 +157,14 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
                             fHarmonize = ( float ) value;
                         break;
 
-                    case kPitchShiftId:
+                    case kReverbId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fPitchShift = ( float ) value;
+                            fReverb = ( value > 0.5f );
+                        break;
+
+                    case kDecimatorId:
+                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
+                            fDecimator = ( float ) value;
                         break;
 
                     case kFilterCutoffId:
@@ -175,6 +175,26 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
                     case kFilterResonanceId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
                             fFilterResonance = ( float ) value;
+                        break;
+
+                    case kSyncChoirId:
+                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
+                            fSyncChoir = ( value > 0.5f );
+                        break;
+
+                    case kOddSpeedId:
+                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
+                            fOddSpeed = ( float ) value;
+                        break;
+
+                    case kEvenSpeedId:
+                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
+                            fEvenSpeed = ( float ) value;
+                        break;
+
+                    case kLinkLFOsId:
+                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
+                            fLinkLFOs = ( value > 0.5f );
                         break;
 
 // --- AUTO-GENERATED PROCESS END
@@ -196,6 +216,7 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
         pluginProcess->setTempo(
             data.processContext->tempo, data.processContext->timeSigNumerator, data.processContext->timeSigDenominator
         );
+        pluginProcess->setHarmonyLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
     }
 
     //---2) Read input events-------------
@@ -301,20 +322,20 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     if ( streamer.readInt32( savedDelayHostSync ) == false )
         return kResultFalse;
 
-    float savedDecimator = 0.f;
-    if ( streamer.readFloat( savedDecimator ) == false )
-        return kResultFalse;
-
-    int32 savedReverb = 0;
-    if ( streamer.readInt32( savedReverb ) == false )
+    float savedPitchShift = 0.f;
+    if ( streamer.readFloat( savedPitchShift ) == false )
         return kResultFalse;
 
     float savedHarmonize = 0.f;
     if ( streamer.readFloat( savedHarmonize ) == false )
         return kResultFalse;
 
-    float savedPitchShift = 0.f;
-    if ( streamer.readFloat( savedPitchShift ) == false )
+    int32 savedReverb = 0;
+    if ( streamer.readInt32( savedReverb ) == false )
+        return kResultFalse;
+
+    float savedDecimator = 0.f;
+    if ( streamer.readFloat( savedDecimator ) == false )
         return kResultFalse;
 
     float savedFilterCutoff = 0.f;
@@ -323,6 +344,22 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
 
     float savedFilterResonance = 0.f;
     if ( streamer.readFloat( savedFilterResonance ) == false )
+        return kResultFalse;
+
+    int32 savedSyncChoir = 0;
+    if ( streamer.readInt32( savedSyncChoir ) == false )
+        return kResultFalse;
+
+    float savedOddSpeed = 0.f;
+    if ( streamer.readFloat( savedOddSpeed ) == false )
+        return kResultFalse;
+
+    float savedEvenSpeed = 0.f;
+    if ( streamer.readFloat( savedEvenSpeed ) == false )
+        return kResultFalse;
+
+    int32 savedLinkLFOs = 0;
+    if ( streamer.readInt32( savedLinkLFOs ) == false )
         return kResultFalse;
 
 
@@ -336,12 +373,16 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     fDelayFeedback = savedDelayFeedback;
     fDelayMix = savedDelayMix;
     fDelayHostSync = savedDelayHostSync > 0;
-    fDecimator = savedDecimator;
-    fReverb = savedReverb > 0;
-    fHarmonize = savedHarmonize;
     fPitchShift = savedPitchShift;
+    fHarmonize = savedHarmonize;
+    fReverb = savedReverb > 0;
+    fDecimator = savedDecimator;
     fFilterCutoff = savedFilterCutoff;
     fFilterResonance = savedFilterResonance;
+    fSyncChoir = savedSyncChoir > 0;
+    fOddSpeed = savedOddSpeed;
+    fEvenSpeed = savedEvenSpeed;
+    fLinkLFOs = savedLinkLFOs > 0;
 
 // --- AUTO-GENERATED SETSTATE APPLY END
 
@@ -395,12 +436,16 @@ tresult PLUGIN_API __PLUGIN_NAME__::getState( IBStream* state )
     streamer.writeFloat( fDelayFeedback );
     streamer.writeFloat( fDelayMix );
     streamer.writeInt32( fDelayHostSync ? 1 : 0 );
-    streamer.writeFloat( fDecimator );
-    streamer.writeInt32( fReverb ? 1 : 0 );
-    streamer.writeFloat( fHarmonize );
     streamer.writeFloat( fPitchShift );
+    streamer.writeFloat( fHarmonize );
+    streamer.writeInt32( fReverb ? 1 : 0 );
+    streamer.writeFloat( fDecimator );
     streamer.writeFloat( fFilterCutoff );
     streamer.writeFloat( fFilterResonance );
+    streamer.writeInt32( fSyncChoir ? 1 : 0 );
+    streamer.writeFloat( fOddSpeed );
+    streamer.writeFloat( fEvenSpeed );
+    streamer.writeInt32( fLinkLFOs ? 1 : 0 );
 
 // --- AUTO-GENERATED GETSTATE END
 
@@ -533,14 +578,17 @@ void __PLUGIN_NAME__::syncModel()
     pluginProcess->setDelayFeedback( fDelayFeedback );
     pluginProcess->setDelayMix( fDelayMix );
 
-    pluginProcess->decimator->setRate( fDecimator > 0.99f ? 0.49f : Calc::inverseNormalize( fDecimator ) * 0.5f );
-    pluginProcess->filter->updateProperties( fFilterCutoff, Calc::inverseNormalize( fFilterResonance ));
+    // a pitch shift of 0.5 is neutral (no shift), < 0.5 is shift down, > 0.5 is shift up
 
-    bool isShiftUp   = Calc::toBool( fPitchShift );
-    float shiftValue = isShiftUp ? Calc::scale( fPitchShift, 1.f, 2.f ) : fPitchShift + 0.5f ;
+    bool isShiftUp   = fPitchShift >= PitchShifter::UNCHANGED;
+    float shiftValue = isShiftUp ? Calc::scale( fPitchShift, 1.f, PitchShifter::OCTAVE_UP ) : fPitchShift + PitchShifter::OCTAVE_DOWN;
 
     pluginProcess->setPitchShift( shiftValue );
-    pluginProcess->setHarmony( fHarmonize );
+    pluginProcess->setHarmony( fHarmonize, Calc::toBool( fSyncChoir ));
+    pluginProcess->setHarmonyLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
+
+    pluginProcess->decimator->setRate( fDecimator > 0.99f ? 0.49f : Calc::inverseNormalize( fDecimator ) * 0.5f );
+    pluginProcess->filter->updateProperties( fFilterCutoff, Calc::inverseNormalize( fFilterResonance ));
     pluginProcess->enableReverb( Calc::toBool( fReverb ));
 }
 
