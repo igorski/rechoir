@@ -152,9 +152,9 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
 */
             for ( k = 0, n = 0; k < FFT_FRAME_SIZE; ++k, n += 2 )
             {
-                window              = -.5 * cos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + .5;
+                window              = -0.5f * Calc::fastCos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
                 gFFTworksp[ n ]     = gInFIFO[ k ] * window;
-                gFFTworksp[ n + 1 ] = 0.;
+                gFFTworksp[ n + 1 ] = 0.f;
             }
 
             /* ***************** ANALYSIS ******************* */
@@ -170,8 +170,8 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
                 imag = gFFTworksp[ ( k << 1 ) + 1 ]; // [ ( 2 * k ) + 1 ]
 
                 /* compute magnitude and phase */
-                magn  = 2. * sqrt( real * real + imag * imag );
-                phase = atan2( imag, real );
+                magn  = 2.f * sqrt( real * real + imag * imag );
+                phase = Calc::fastAtan2( imag, real );
 
                 /* compute phase difference */
                 tmp             = phase - gLastPhase[ k ];
@@ -237,8 +237,8 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
                 phase           = gSumPhase[ k ];
 
                 /* get real and imag part and re-interleave */
-                gFFTworksp[ k << 1 ]     = magn * cos( phase );     // [ 2 * k ]
-                gFFTworksp[ ( k << 1 ) + 1 ] = magn * sin( phase ); // [ (2 * k) + 1 ]
+                gFFTworksp[ k << 1 ] = magn * Calc::fastCos( phase );     // [ 2 * k ]
+                gFFTworksp[ ( k << 1 ) + 1 ] = magn * Calc::fastSin( phase ); // [ (2 * k) + 1 ]
             }
 
             /* zero negative frequencies */
@@ -260,7 +260,7 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             */
             for ( k = 0; k < FFT_FRAME_SIZE; ++k )
             {
-                window = -0.5f * cos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
+                window = -0.5f * Calc::fastCos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
                 gOutputAccum[ k ] += 2.f * window * gFFTworksp[ 2 * k ] / ( FFT_FRAME_SIZE_HALF * osamp );
             }
 

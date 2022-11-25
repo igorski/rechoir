@@ -31,11 +31,11 @@
 #define __PITCHSHIFTER_H_INCLUDED__
 
 #include <string.h>
-#include <cmath>
 #include <stdio.h>
+#include "calc.h"
 #include "wavetable.h"
 
-#define MAX_FRAME_LENGTH 8192
+#define MAX_FRAME_LENGTH 4096//8192
 
 namespace Igorski {
 
@@ -119,15 +119,17 @@ class PitchShifter
                 }
             }
 
-            for ( k = 0, le = 2, end = ( long )( log( fftFrameSize ) / log( 2. ) + .5 ); k < end; ++k )
+            // 0.69314... being std::log( 2.f )
+            for ( k = 0, le = 2, end = ( long )( std::log( fftFrameSize ) / 0.6931471805599453f + .5f ); k < end; ++k )
             {
                 le <<= 1;
                 le2  = le >> 1;
                 ur  = 1.0;
                 ui  = 0.0;
-                arg = M_PI / ( le2 >>1 );
-                wr  = cos( arg );
-                wi  = sign * sin( arg );
+                arg = M_PI / ( le2 >> 1 );
+                wr  = std::cos( arg );
+                wi  = sign * std::sin( arg );
+
                 for ( j = 0; j < le2; j += 2 ) {
                     p1r = fftBuffer + j;
                     p1i = p1r + 1;
