@@ -46,7 +46,39 @@ const MODEL = [
         descr: "Delay time",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.25f", type: "percent" },
-        ui: { x: 10, y: 120, w: 134, h: 21 }
+        ui: { x: 10, y: 120, w: 134, h: 21 },
+        customDescr: `tmpValue = round( valueNormalized * 16 );
+            switch (( int ) tmpValue ) {
+                default:
+                    sprintf( text, "%.f 16th notes", tmpValue );
+                    break;
+                case 0:
+                    sprintf( text, "Slapback" );
+                    break;
+                case 1:
+                    sprintf( text, "16th note" );
+                    break;
+                case 2:
+                    sprintf( text, "8th note" );
+                    break;
+                case 4:
+                    sprintf( text, "Quarter note" );
+                    break;
+                case 6:  // 3 8th notes
+                case 10: // 5 8th notes
+                case 14: // 7 8th notes
+                    sprintf( text, "%.f 8th notes", tmpValue / 2 );
+                    break;
+                case 8:
+                    sprintf( text, "Half measure" );
+                    break;
+                case 12:
+                    sprintf( text, "3 quarter notes" );
+                    break;
+                case 16:
+                    sprintf( text, "Full measure" );
+                    break;
+            }`
     },
     {
         name: "delayFeedback",
@@ -60,13 +92,6 @@ const MODEL = [
         descr: "Delay mix",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
-        ui: { x: 10, y: 120, w: 134, h: 21 }
-    },
-    {
-        name: "delayHostSync",
-        descr: "Sync delay",
-        unitDescr: "On/off",
-        value: { min: "0", max: "1", def: "1", type: "bool" },
         ui: { x: 10, y: 120, w: 134, h: 21 }
     },
     {

@@ -105,11 +105,6 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
     );
     parameters.addParameter( delayMixParam );
 
-
-    parameters.addParameter(
-        USTRING( "Sync delay" ), 0, 1, 1, ParameterInfo::kCanAutomate, kDelayHostSyncId, unitId
-    );
-
     RangeParameter* pitchShiftParam = new RangeParameter(
         USTRING( "Pitch shift amount" ), kPitchShiftId, USTRING( "%" ),
         0.f, 1.f, 0.5f,
@@ -221,11 +216,6 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
     if ( streamer.readFloat( savedDelayMix ) == false )
         return kResultFalse;
     setParamNormalized( kDelayMixId, savedDelayMix );
-
-    int32 savedDelayHostSync = 1;
-    if ( streamer.readInt32( savedDelayHostSync ) == false )
-        return kResultFalse;
-    setParamNormalized( kDelayHostSyncId, savedDelayHostSync ? 1 : 0 );
 
     float savedPitchShift = 0.5f;
     if ( streamer.readFloat( savedPitchShift ) == false )
@@ -385,7 +375,38 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
 // --- AUTO-GENERATED GETPARAM START
 
         case kDelayTimeId:
-            sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
+            tmpValue = round( valueNormalized * 16 );
+            switch (( int ) tmpValue ) {
+                default:
+                    sprintf( text, "%.f 16th notes", tmpValue );
+                    break;
+                case 0:
+                    sprintf( text, "Slapback" );
+                    break;
+                case 1:
+                    sprintf( text, "16th note" );
+                    break;
+                case 2:
+                    sprintf( text, "8th note" );
+                    break;
+                case 4:
+                    sprintf( text, "Quarter note" );
+                    break;
+                case 6:  // 3 8th notes
+                case 10: // 5 8th notes
+                case 14: // 7 8th notes
+                    sprintf( text, "%.f 8th notes", tmpValue / 2 );
+                    break;
+                case 8:
+                    sprintf( text, "Half measure" );
+                    break;
+                case 12:
+                    sprintf( text, "3 quarter notes" );
+                    break;
+                case 16:
+                    sprintf( text, "Full measure" );
+                    break;
+            }
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
@@ -396,11 +417,6 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
 
         case kDelayMixId:
             sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
-            Steinberg::UString( string, 128 ).fromAscii( text );
-            return kResultTrue;
-
-        case kDelayHostSyncId:
-            sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 

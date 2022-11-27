@@ -37,11 +37,9 @@ using namespace Steinberg;
 namespace Igorski {
 class PluginProcess {
 
-    // max delay time in milliseconds
-    // this is used when host sync is disabled
-    // otherwise max delay time equals a full measure
+    // max delay time in milliseconds, enough for 30 BPM 4/4 time
 
-    const float MAX_DELAY_TIME_MS = 5000.f;
+    const float MAX_DELAY_TIME_MS = 8000.f;
 
     public:
         PluginProcess( int amountOfChannels );
@@ -84,10 +82,6 @@ class PluginProcess {
         std::vector<Reverb*> _reverbs;
         Limiter* limiter;
 
-        // whether delay time is synced to hosts tempo
-
-        bool syncDelayToHost;
-
     private:
         AudioBuffer* _delayBuffer;   // contains the delay memory
         AudioBuffer* _preMixBuffer;  // buffer used for the pre-delay effect mixing
@@ -123,7 +117,7 @@ class PluginProcess {
 
         // syncs current delay time to musically pleasing intervals synced to host tempo and time signature
 
-        void syncDelayTime();
+        void syncDelayTime( float delayTimeInMs );
 
         bool _linkedLFOs = false;
         float _oddSteps  = 0.f;

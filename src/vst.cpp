@@ -142,11 +142,6 @@ tresult PLUGIN_API __PLUGIN_NAME__::process( ProcessData& data )
                             fDelayMix = ( float ) value;
                         break;
 
-                    case kDelayHostSyncId:
-                        if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fDelayHostSync = ( value > 0.5f );
-                        break;
-
                     case kPitchShiftId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
                             fPitchShift = ( float ) value;
@@ -318,10 +313,6 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     if ( streamer.readFloat( savedDelayMix ) == false )
         return kResultFalse;
 
-    int32 savedDelayHostSync = 0;
-    if ( streamer.readInt32( savedDelayHostSync ) == false )
-        return kResultFalse;
-
     float savedPitchShift = 0.f;
     if ( streamer.readFloat( savedPitchShift ) == false )
         return kResultFalse;
@@ -372,7 +363,6 @@ tresult PLUGIN_API __PLUGIN_NAME__::setState( IBStream* state )
     fDelayTime = savedDelayTime;
     fDelayFeedback = savedDelayFeedback;
     fDelayMix = savedDelayMix;
-    fDelayHostSync = savedDelayHostSync > 0;
     fPitchShift = savedPitchShift;
     fHarmonize = savedHarmonize;
     fReverb = savedReverb > 0;
@@ -435,7 +425,6 @@ tresult PLUGIN_API __PLUGIN_NAME__::getState( IBStream* state )
     streamer.writeFloat( fDelayTime );
     streamer.writeFloat( fDelayFeedback );
     streamer.writeFloat( fDelayMix );
-    streamer.writeInt32( fDelayHostSync ? 1 : 0 );
     streamer.writeFloat( fPitchShift );
     streamer.writeFloat( fHarmonize );
     streamer.writeInt32( fReverb ? 1 : 0 );
@@ -557,7 +546,7 @@ tresult PLUGIN_API __PLUGIN_NAME__::notify( IMessage* message )
         {
             // we are in UI thread
             // size should be 100
-            if ( size == 100 && ((char*)data)[1] == 1 ) // yeah...
+            if ( size == 100 && (( char* ) data )[ 1 ] == 1 ) // yeah...
             {
                 fprintf( stderr, "[__PLUGIN_NAME__] received the binary message!\n" );
             }
@@ -573,7 +562,6 @@ void __PLUGIN_NAME__::syncModel()
     // forward the protected model values onto the plugin process and related processors
     // NOTE: when dealing with "bool"-types, use Calc::toBool() to determine on/off
 
-    pluginProcess->syncDelayToHost = Calc::toBool( fDelayHostSync );
     pluginProcess->setDelayTime( fDelayTime );
     pluginProcess->setDelayFeedback( fDelayFeedback );
     pluginProcess->setDelayMix( fDelayMix );

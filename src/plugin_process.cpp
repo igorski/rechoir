@@ -63,8 +63,6 @@ PluginProcess::PluginProcess( int amountOfChannels ) {
     _timeSigNumerator   = 4;
     _timeSigDenominator = 4;
 
-    syncDelayToHost = true;
-
     // will be lazily created in the process function
     _preMixBuffer  = 0;
     _postMixBuffer = 0;
@@ -94,17 +92,17 @@ PluginProcess::~PluginProcess()
 
 void PluginProcess::setDelayTime( float value )
 {
-    // maximum delay time (in milliseconds) is specified in MAX_DELAY_TIME_MS when using freeform scaling
+    // maximum delay time (in milliseconds) is specified in MAX_DELAY_TIME_MS
     // when the delay is synced to the host, the maximum time is a single measure
     // at the current tempo and time signature
 
-    float delayMaxInMs = ( syncDelayToHost ) ? (( 60.f / _tempo ) * _timeSigDenominator ) * 1000.f : MAX_DELAY_TIME_MS;
+    float delayMaxInMs = (( 60.f / _tempo ) * _timeSigDenominator ) * 1000.f;
 
-    _delayTime = Calc::millisecondsToBuffer( Calc::cap( value ) * delayMaxInMs );
-
-    if ( syncDelayToHost ) {
-        syncDelayTime();
+    if ( delayMaxInMs > MAX_DELAY_TIME_MS ) {
+        delayMaxInMs = MAX_DELAY_TIME_MS;
     }
+
+    syncDelayTime( Calc::millisecondsToBuffer( Calc::cap( value ) * delayMaxInMs ));
 
     for ( int i = 0; i < _amountOfChannels; ++i ) {
         if ( _delayIndices[ i ] >= _delayTime ) {
@@ -190,19 +188,16 @@ bool PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSi
         return false; // no change
     }
 
-    if ( syncDelayToHost ) {
+    // delay is synced to host tempo, keep delay time
+    // relative to new tempo
 
-        // if delay is synced to host tempo, keep delay time
-        // relative to new tempo
+    float currentFullMeasureDuration = ( 60.f / _tempo ) * _timeSigDenominator;
+    float currentDelaySubdivision    = currentFullMeasureDuration / _delayTime;
 
-        float currentFullMeasureDuration = ( 60.f / _tempo ) * _timeSigDenominator;
-        float currentDelaySubdivision    = currentFullMeasureDuration / _delayTime;
+    // calculate new delay time (note we're using passed arguments as values)
 
-        // calculate new delay time (note we're using passed arguments as values)
-
-        float newFullMeasureDuration = ( 60.f / tempo ) * timeSigDenominator;
-        _delayTime = newFullMeasureDuration / currentDelaySubdivision;
-    }
+    float newFullMeasureDuration = ( 60.f / tempo ) * timeSigDenominator;
+    _delayTime = newFullMeasureDuration / currentDelaySubdivision;
 
     _timeSigNumerator   = timeSigNumerator;
     _timeSigDenominator = timeSigDenominator;
@@ -219,17 +214,17 @@ bool PluginProcess::setTempo( double tempo, int32 timeSigNumerator, int32 timeSi
 
 /* protected methods */
 
-void PluginProcess::syncDelayTime()
+void PluginProcess::syncDelayTime( float delayTimeInMs )
 {
     // duration of a full measure in samples
 
     int fullMeasureSamples = Calc::secondsToBuffer(( 60.f / _tempo ) * _timeSigDenominator );
 
-    // we allow syncing to up to 32nd note resolution
+    // we allow syncing to up to 16th note resolution
 
-    int subdivision = 32;
+    int subdivision = 16;
 
-    _delayTime = Calc::roundTo( _delayTime, fullMeasureSamples / subdivision );
+    _delayTime = Calc::roundTo( delayTimeInMs, fullMeasureSamples / subdivision );
 }
 
 void PluginProcess::syncPitchShifterTables( float steps, int resto )
