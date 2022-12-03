@@ -113,7 +113,7 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
     parameters.addParameter( pitchShiftParam );
 
     RangeParameter* harmonizeParam = new RangeParameter(
-        USTRING( "Choir" ), kHarmonizeId, USTRING( "undefined" ),
+        USTRING( "Scale" ), kHarmonizeId, USTRING( "undefined" ),
         0, 1, 0,
         0, ParameterInfo::kCanAutomate, unitId
     );
@@ -132,7 +132,7 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
     parameters.addParameter( decimatorParam );
 
     RangeParameter* filterCutoffParam = new RangeParameter(
-        USTRING( "Filter cut off" ), kFilterCutoffId, USTRING( "%" ),
+        USTRING( "Filter cutoff" ), kFilterCutoffId, USTRING( "%" ),
         0.f, 1.f, 0.5f,
         0, ParameterInfo::kCanAutomate, unitId
     );
@@ -147,7 +147,7 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
 
 
     parameters.addParameter(
-        USTRING( "Sync choir" ), 0, 1, 0, ParameterInfo::kCanAutomate, kSyncChoirId, unitId
+        USTRING( "Modulate scale" ), 0, 1, 0, ParameterInfo::kCanAutomate, kSyncChoirId, unitId
     );
 
     RangeParameter* oddSpeedParam = new RangeParameter(
@@ -166,7 +166,7 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
 
 
     parameters.addParameter(
-        USTRING( "Link oscillators" ), 0, 1, 1, ParameterInfo::kCanAutomate, kLinkLFOsId, unitId
+        USTRING( "Sync choir" ), 0, 1, 1, ParameterInfo::kCanAutomate, kLinkLFOsId, unitId
     );
 
 
@@ -429,7 +429,7 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             if ( valueNormalized == 0 ) {
                 sprintf( text, "Off" );
             } else {
-                switch (( int ) round( 5.f * valueNormalized )) {
+                switch (( int ) round( 6.f * valueNormalized )) {
                     default:
                     case 0:
                         sprintf( text, "Neutral (2nd, 5th)" );
@@ -444,9 +444,12 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
                         sprintf( text, "Augmented" );
                         break;
                     case 4:
-                        sprintf( text, "Minor" );
+                        sprintf( text, "Dorian" );
                         break;
                     case 5:
+                        sprintf( text, "Minor" );
+                        break;
+                    case 6:
                         sprintf( text, "Diminished" );
                         break;
                 }
@@ -465,7 +468,7 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             return kResultTrue;
 
         case kFilterCutoffId:
-            sprintf( text, "%.2d %%", ( int ) ( valueNormalized * 100.f ));
+            sprintf( text, "%.2d Hz", ( int ) (( Igorski::VST::FILTER_MAX_FREQ - Igorski::VST::FILTER_MIN_FREQ ) * valueNormalized ) + ( int ) Igorski::VST::FILTER_MIN_FREQ );
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 

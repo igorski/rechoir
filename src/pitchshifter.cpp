@@ -81,6 +81,11 @@ void PitchShifter::setScale( VST::Scale scale, bool syncActive )
         _scale = scale;
         alignPitchToScaleNote();
     }
+    syncScaleToLFO( syncActive );
+}
+
+void PitchShifter::syncScaleToLFO( bool syncActive )
+{
     _syncScaleToLFO = syncActive;
 }
 

@@ -124,17 +124,15 @@ void PluginProcess::setDelayFeedback( float value )
 void PluginProcess::setPitchShift( float value )
 {
     float pitch = std::fmin( PitchShifter::OCTAVE_UP, std::fmax( PitchShifter::OCTAVE_DOWN, value ));
-    if ( pitch == _pitchShift ) {
-        return;
-    }
 
     _pitchShift = pitch;
 
-    if ( _harmonize ) {
+    if ( isHarmonized() ) {
         return;
     }
     for ( auto pitchShifter : *_pitchShifters ) {
         pitchShifter->pitchShift = _pitchShift;
+        pitchShifter->syncScaleToLFO( false );
     }
 }
 
@@ -148,7 +146,7 @@ void PluginProcess::setHarmony( float value, bool syncToBeat )
     }
 
     // determine scale by integral value
-    VST::Scale scale = static_cast<VST::Scale>(( int ) round( 5.f * value ));
+    VST::Scale scale = static_cast<VST::Scale>(( int ) round( 6.f * value ));
 
     for ( size_t i = 0; i < _pitchShifters->size(); ++i ) {
         _pitchShifters->at( i )->setScale( scale, syncToBeat );

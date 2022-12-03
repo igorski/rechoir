@@ -46,7 +46,7 @@ const MODEL = [
         descr: "Delay time",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.25f", type: "percent" },
-        ui: { x: 10, y: 120, w: 134, h: 21 },
+        ui: { x: 59, y: 155, w: 126, h: 128 },
         customDescr: `tmpValue = round( valueNormalized * 16 );
             switch (( int ) tmpValue ) {
                 default:
@@ -85,31 +85,31 @@ const MODEL = [
         descr: "Delay feedback",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
-        ui: { x: 10, y: 120, w: 134, h: 21 }
+        ui: { x: 219, y: 155, w: 126, h: 128 }
     },
     {
         name: "delayMix",
         descr: "Delay mix",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
-        ui: { x: 10, y: 120, w: 134, h: 21 }
+        ui: { x: 379, y: 155, w: 126, h: 128 }
     },
     {
         name: "pitchShift",
         descr: "Pitch shift amount",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
-        ui: { x: 10, y: 150, w: 134, h: 21 }
+        ui: { x: 677, y: 155, w: 126, h: 128 }
     },
     {
         name: "harmonize",
-        descr: "Choir",
+        descr: "Scale",
         value: { min: "0", max: "1", def: "0", type: "percent" },
-        ui: { x: 336, y: 439, w: 70, h: 70 },
+        ui: { x: 836, y: 155, w: 126, h: 128 },
         customDescr: `if ( valueNormalized == 0 ) {
                 sprintf( text, "Off" );
             } else {
-                switch (( int ) round( 5.f * valueNormalized )) {
+                switch (( int ) round( 6.f * valueNormalized )) {
                     default:
                     case 0:
                         sprintf( text, "Neutral (2nd, 5th)" );
@@ -124,9 +124,12 @@ const MODEL = [
                         sprintf( text, "Augmented" );
                         break;
                     case 4:
-                        sprintf( text, "Minor" );
+                        sprintf( text, "Dorian" );
                         break;
                     case 5:
+                        sprintf( text, "Minor" );
+                        break;
+                    case 6:
                         sprintf( text, "Diminished" );
                         break;
                 }
@@ -136,34 +139,35 @@ const MODEL = [
         name: "reverb",
         descr: "Freeze",
         value: { min: "0", max: "1", def: "0", type: "bool" },
-        ui: { x: 215, y: 414, w: 70, h: 70 }
+        ui: { x: 578, y: 195, w: 25, h: 40 }
     },
     {
         name: "decimator",
         descr: "Decimation",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.f", type: "percent" },
-        ui: { x: 199, y: 165, w: 104, h: 21 },
+        ui: { x: 508, y: 386, w: 126, h: 128 },
     },
     {
         name: "filterCutoff",
-        descr: "Filter cut off",
+        descr: "Filter cutoff",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
-        ui: { x: 10, y: 150, w: 134, h: 21 }
+        ui: { x: 679, y: 386, w: 126, h: 128 },
+        customDescr: 'sprintf( text, "%.2d Hz", ( int ) (( Igorski::VST::FILTER_MAX_FREQ - Igorski::VST::FILTER_MIN_FREQ ) * valueNormalized ) + ( int ) Igorski::VST::FILTER_MIN_FREQ );'
     },
     {
         name: "filterResonance",
         descr: "Filter resonance",
         unitDescr: "%",
         value: { min: "0.f", max: "1.f", def: "0.5f", type: "percent" },
-        ui: { x: 10, y: 150, w: 134, h: 21 }
+        ui: { x: 839, y: 386, w: 126, h: 128 }
     },
     {
         name: "syncChoir",
-        descr: "Sync choir",
+        descr: "Modulate scale",
         value: { min: "0", max: "1", def: "0", type: "bool" },
-        ui: { x: 290, y: 246, w: 25, h: 40 }
+        ui: { x: 59, y: 425, w: 25, h: 40 }
     },
     // gate speeds are normalized 0 - 1 range values that translate to a 1 to 32 range (measure subdivisions)
     {
@@ -171,7 +175,7 @@ const MODEL = [
         descr: "Odd channel speed",
         unitDescr: "steps",
         value: { min: "0.f", max: "1.f", def: "0.35f", type: "percent" },
-        ui: { x: 217, y: 157, w: 70, h: 70 },
+        ui: { x: 111, y: 386, w: 126, h: 128 },
         customDescr: gateSubdivisionFormatFn,
     },
     {
@@ -179,14 +183,14 @@ const MODEL = [
         descr: "Even channel speed",
         unitDescr: "steps",
         value: { min: "0.f", max: "1.f", def: "1.f", type: "percent" },
-        ui: { x: 310, y: 157, w: 70, h: 70 },
+        ui: { x: 336, y: 386, w: 126, h: 128 },
         customDescr: gateSubdivisionFormatFn,
     },
     {
         name: "linkLFOs",
-        descr: "Link oscillators",
+        descr: "Sync choir",
         value: { min: "0", max: "1", def: "1", type: "bool" },
-        ui: { x: 290, y: 246, w: 25, h: 40 }
+        ui: { x: 278, y: 425, w: 25, h: 40 }
     },
 ];
 
@@ -464,27 +468,26 @@ function generateUI() {
         const { param } = generateNamesForParam( entry );
         let control;
 
-        if ( type === 'bool' ) {
+        if ( type === "bool" ) {
             control = `<view
               control-tag="Unit1::${param}" class="CCheckBox" origin="${x}, ${y}" size="${w}, ${h}"
               max-value="${max}" min-value="${min}" default-value="${def}"
-              background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
-              boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
-              draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
-              autosize-to-fit="false" frame-width="1"
+              background-offset="0, 0" boxfill-color="~ TransparentCColor" autosize="bottom"
+              boxframe-color="~ TransparentCColor" checkmark-color="~ WhiteCColor"
+              draw-crossbox="false" autosize-to-fit="false" frame-width="1"
               mouse-enabled="true" opacity="1" round-rect-radius="0"
-              title="${descr}" transparent="false" wants-focus="true" wheel-inc-value="0.1"
+              title="" transparent="true" wants-focus="true" wheel-inc-value="0.1"
         />`;
         } else {
             control = `<view
-              control-tag="Unit1::${param}" class="CSlider" origin="${x}, ${y}" size="${w}, ${h}"
-              max-value="${max}" min-value="${min}" default-value="${def}"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::${param}" class="CKnob" origin="${x}, ${y}" size="${w}, ${h}"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="${def}"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="${max}"
+              min-value="${min}" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />`;
         }
         controlLines.push(`

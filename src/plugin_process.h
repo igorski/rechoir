@@ -82,6 +82,10 @@ class PluginProcess {
         std::vector<Reverb*> _reverbs;
         Limiter* limiter;
 
+        void enableFilter( bool enabled ) {
+            _filterEnabled = enabled;
+        }
+
     private:
         AudioBuffer* _delayBuffer;   // contains the delay memory
         AudioBuffer* _preMixBuffer;  // buffer used for the pre-delay effect mixing
@@ -95,6 +99,7 @@ class PluginProcess {
 
         int _amountOfChannels;
         bool _reverbEnabled = false;
+        bool _filterEnabled = false;
 
         float _pitchShift = 1.f;
         float _harmonize  = 0.f;

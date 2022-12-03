@@ -20,10 +20,9 @@ namespace VST {
     extern float SAMPLE_RATE; // set upon initialization, see vst.cpp
 
     // maximum and minimum filter frequency ranges
-    // also see .uidesc to update the controls to match
 
     static const float FILTER_MIN_FREQ      = 30.f;
-    static const float FILTER_MAX_FREQ      = 22050.f;
+    static const float FILTER_MAX_FREQ      = 20000.f;
     static const float FILTER_MIN_RESONANCE = 0.1f;
     static const float FILTER_MAX_RESONANCE = 0.7071067811865476f; //sqrt( 2.f ) / 2.f;
 
@@ -54,17 +53,19 @@ namespace VST {
         MAJOR,
         MIXOLYDIAN,
         AUGMENTED,
+        DORIAN,
         MINOR,
         DIMINISHED
     };
 
     // scale notes (in order of Scale enum!)
 
-    static constexpr int SCALE_NOTES[ 6 ][ NOTES_IN_SCALE ] = {
+    static constexpr int SCALE_NOTES[ 7 ][ NOTES_IN_SCALE ] = {
         { 2, 7 },  // 2nd and 5th
         { 4, 11 }, // major 3rd and major 7th
         { 4, 10 }, // major 3rd and minor 7th
         { 4, 8 },  // minor 3rd and augmented 5th
+        { 3, 9 },  // minor 3rd and 6th
         { 3, 10 }, // minor 3rd and minor 7th
         { 3, 6 }   // minor 3rd and diminished 5th
     };

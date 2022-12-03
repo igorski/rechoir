@@ -3,10 +3,10 @@
     <fonts>
     </fonts>
     <colors>
-        <color name="Focus" rgba="#279bffff"/>
+        <color name="Focus" rgba="#e0861dff"/>
     </colors>
     <template
-        maxSize="500, 500" minSize="500, 500" size="500, 500" name="view" opacity="1" origin="0, 0"
+        maxSize="1020, 600" minSize="1020, 600" size="1020, 600" name="view" opacity="1" origin="0, 0"
         background-color="~ BlackCColor" background-color-draw-style="filled and stroked" bitmap="background"
         class="CViewContainer"  mouse-enabled="true"  transparent="false">
 
@@ -16,149 +16,147 @@
 
         <!-- Delay time -->
         <view
-              control-tag="Unit1::delayTimeParam" class="CSlider" origin="10, 120" size="134, 21"
-              max-value="1.f" min-value="0.f" default-value="0.25f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::delayTimeParam" class="CKnob" origin="59, 155" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.25f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
         <!-- Delay feedback -->
         <view
-              control-tag="Unit1::delayFeedbackParam" class="CSlider" origin="10, 120" size="134, 21"
-              max-value="1.f" min-value="0.f" default-value="0.5f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::delayFeedbackParam" class="CKnob" origin="219, 155" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.5f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
         <!-- Delay mix -->
         <view
-              control-tag="Unit1::delayMixParam" class="CSlider" origin="10, 120" size="134, 21"
-              max-value="1.f" min-value="0.f" default-value="0.5f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::delayMixParam" class="CKnob" origin="379, 155" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.5f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
         <!-- Pitch shift amount -->
         <view
-              control-tag="Unit1::pitchShiftParam" class="CSlider" origin="10, 150" size="134, 21"
-              max-value="1.f" min-value="0.f" default-value="0.5f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::pitchShiftParam" class="CKnob" origin="677, 155" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.5f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
-        <!-- Choir -->
+        <!-- Scale -->
         <view
-              control-tag="Unit1::harmonizeParam" class="CSlider" origin="336, 439" size="70, 70"
-              max-value="1" min-value="0" default-value="0"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::harmonizeParam" class="CKnob" origin="836, 155" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1"
+              min-value="0" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
         <!-- Freeze -->
         <view
-              control-tag="Unit1::reverbParam" class="CCheckBox" origin="215, 414" size="70, 70"
+              control-tag="Unit1::reverbParam" class="CCheckBox" origin="578, 195" size="25, 40"
               max-value="1" min-value="0" default-value="0"
-              background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
-              boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
-              draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
-              autosize-to-fit="false" frame-width="1"
+              background-offset="0, 0" boxfill-color="~ TransparentCColor" autosize="bottom"
+              boxframe-color="~ TransparentCColor" checkmark-color="~ WhiteCColor"
+              draw-crossbox="false" autosize-to-fit="false" frame-width="1"
               mouse-enabled="true" opacity="1" round-rect-radius="0"
-              title="Freeze" transparent="false" wants-focus="true" wheel-inc-value="0.1"
+              title="" transparent="true" wants-focus="true" wheel-inc-value="0.1"
         />
         <!-- Decimation -->
         <view
-              control-tag="Unit1::decimatorParam" class="CSlider" origin="199, 165" size="104, 21"
-              max-value="1.f" min-value="0.f" default-value="0.f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::decimatorParam" class="CKnob" origin="508, 386" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
-        <!-- Filter cut off -->
+        <!-- Filter cutoff -->
         <view
-              control-tag="Unit1::filterCutoffParam" class="CSlider" origin="10, 150" size="134, 21"
-              max-value="1.f" min-value="0.f" default-value="0.5f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::filterCutoffParam" class="CKnob" origin="679, 386" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.5f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
         <!-- Filter resonance -->
         <view
-              control-tag="Unit1::filterResonanceParam" class="CSlider" origin="10, 150" size="134, 21"
-              max-value="1.f" min-value="0.f" default-value="0.5f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::filterResonanceParam" class="CKnob" origin="839, 386" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.5f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
-        <!-- Sync choir -->
+        <!-- Modulate scale -->
         <view
-              control-tag="Unit1::syncChoirParam" class="CCheckBox" origin="290, 246" size="25, 40"
+              control-tag="Unit1::syncChoirParam" class="CCheckBox" origin="59, 425" size="25, 40"
               max-value="1" min-value="0" default-value="0"
-              background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
-              boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
-              draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
-              autosize-to-fit="false" frame-width="1"
+              background-offset="0, 0" boxfill-color="~ TransparentCColor" autosize="bottom"
+              boxframe-color="~ TransparentCColor" checkmark-color="~ WhiteCColor"
+              draw-crossbox="false" autosize-to-fit="false" frame-width="1"
               mouse-enabled="true" opacity="1" round-rect-radius="0"
-              title="Sync choir" transparent="false" wants-focus="true" wheel-inc-value="0.1"
+              title="" transparent="true" wants-focus="true" wheel-inc-value="0.1"
         />
         <!-- Odd channel speed -->
         <view
-              control-tag="Unit1::oddSpeedParam" class="CSlider" origin="217, 157" size="70, 70"
-              max-value="1.f" min-value="0.f" default-value="0.35f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::oddSpeedParam" class="CKnob" origin="111, 386" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="0.35f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
         <!-- Even channel speed -->
         <view
-              control-tag="Unit1::evenSpeedParam" class="CSlider" origin="310, 157" size="70, 70"
-              max-value="1.f" min-value="0.f" default-value="1.f"
-              background-offset="0, 0" bitmap="slider_background"
-              bitmap-offset="0, 0" draw-back="false" draw-back-color="~ WhiteCColor" draw-frame="false"
-              draw-frame-color="~ WhiteCColor" draw-value="false" draw-value-color="~ WhiteCColor" draw-value-from-center="false"
-              draw-value-inverted="false" handle-bitmap="slider_handle" handle-offset="0, 0"
-              mode="free click" mouse-enabled="true" opacity="1" orientation="horizontal" reverse-orientation="false"
-              transparent="true" transparent-handle="true" wheel-inc-value="0.1" zoom-factor="10"
+              control-tag="Unit1::evenSpeedParam" class="CKnob" origin="336, 386" size="126, 128"
+              angle-range="270" angle-start="135" autosize="right top"
+              background-offset="0, 0" circle-drawing="true" corona-color="#83d2ad" corona-dash-dot="false"
+              corona-drawing="true" corona-from-center="false" corona-inset="5" corona-inverted="false"
+              corona-line-cap-butt="false" corona-outline="true" corona-outline-width-add="0" default-value="1.f"
+              handle-color="#83d2ad" handle-line-width="8" handle-shadow-color="~ #1e2239" max-value="1.f"
+              min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
+              value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
-        <!-- Link oscillators -->
+        <!-- Sync choir -->
         <view
-              control-tag="Unit1::linkLFOsParam" class="CCheckBox" origin="290, 246" size="25, 40"
+              control-tag="Unit1::linkLFOsParam" class="CCheckBox" origin="278, 425" size="25, 40"
               max-value="1" min-value="0" default-value="1"
-              background-offset="0, 0" boxfill-color="~ GreenCColor" autosize="bottom"
-              boxframe-color="~ BlackCColor" checkmark-color="~ BlackCColor"
-              draw-crossbox="true" font="~ NormalFontSmall" font-color="Light Grey"
-              autosize-to-fit="false" frame-width="1"
+              background-offset="0, 0" boxfill-color="~ TransparentCColor" autosize="bottom"
+              boxframe-color="~ TransparentCColor" checkmark-color="~ WhiteCColor"
+              draw-crossbox="false" autosize-to-fit="false" frame-width="1"
               mouse-enabled="true" opacity="1" round-rect-radius="0"
-              title="Link oscillators" transparent="false" wants-focus="true" wheel-inc-value="0.1"
+              title="" transparent="true" wants-focus="true" wheel-inc-value="0.1"
         />
 <!-- AUTO-GENERATED CONTROLS END -->
 
+        <view class="CView" size="41, 11" origin="938, 20" bitmap="version" transparent="false" />
     </template>
     <variables/>
     <custom>
@@ -183,10 +181,8 @@
         <attributes SelectedRow="-1" name="UIFontsDataSource"/>
     </custom>
     <bitmaps>
-        <bitmap name="background" path="background.png"/>
-        <bitmap name="slider_background" path="slider_background.png"/>
-        <bitmap name="slider_handle" path="slider_handle.png"/>
-        <bitmap name="slider_handle#2x" path="slider_handle_2.0x.png" scale-factor="2"/>
+        <bitmap name="background" path="background.png" />
+        <bitmap name="version" path="version.png" />
     </bitmaps>
 
     <!-- map the controllers listed above to their paramids by tag index -->

@@ -96,8 +96,10 @@ void PluginProcess::process( SampleType** inBuffer, SampleType** outBuffer, int 
         _pitchShifters->at( c )->process( channelPostMixBuffer, bufferSize );
 
         decimator->process( channelPostMixBuffer, bufferSize );
-        filter->process( channelPostMixBuffer, bufferSize, c );
 
+        if ( _filterEnabled ) {
+            filter->process( channelPostMixBuffer, bufferSize, c );
+        }
         if ( _reverbEnabled ) {
             reverb->process( channelPostMixBuffer, bufferSize );
         }

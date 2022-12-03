@@ -577,6 +577,7 @@ void __PLUGIN_NAME__::syncModel()
 
     pluginProcess->decimator->setRate( fDecimator > 0.99f ? 0.49f : Calc::inverseNormalize( fDecimator ) * 0.5f );
     pluginProcess->filter->updateProperties( fFilterCutoff, Calc::inverseNormalize( fFilterResonance ));
+    pluginProcess->enableFilter( fFilterCutoff < 1.f );
     pluginProcess->enableReverb( Calc::toBool( fReverb ));
 }
 

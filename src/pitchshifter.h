@@ -71,6 +71,7 @@ class PitchShifter
 
         WaveTable* getWaveTable();
         void setScale( VST::Scale scale, bool syncActive );
+        void syncScaleToLFO( bool syncActive );
 
         void process( float* channelBuffer, int bufferSize );
 
