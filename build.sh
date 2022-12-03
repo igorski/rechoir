@@ -27,7 +27,7 @@ buildStatus=$?
 
 if [ $buildStatus -eq 0 ]; then
     if [ "$1" == "vst2" ]; then
-        mv ./VST3/__PLUGIN_NAME__.vst3 ./VST3/__PLUGIN_NAME__.vst
+        mv ./VST3/rechoir.vst3 ./VST3/rechoir.vst
     fi
     echo "Plugin built successfully"
 else

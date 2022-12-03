@@ -10,7 +10,7 @@ namespace Igorski {
 namespace VST {
 
     static const int   ID       = 97151822;
-    static const char* NAME     = "__PLUGIN_NAME__";
+    static const char* NAME     = "Rechoir";
     static const char* VENDOR   = "igorski.nl";
 
     static const FUID PluginProcessorUID( 0xB5D40EF0, 0xD98545BB, 0xBE1C9262, 0x4F78C208 );

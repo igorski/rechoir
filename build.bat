@@ -13,7 +13,7 @@ cmake.exe -G"Visual Studio 16 2019" %SMTG_CREATE_VST2_VERSION% -DVST3_SDK_ROOT=%
 cmake --build . --config Release
 
 IF /I "%1"=="vst2" (
-    rename VST3\Release\__PLUGIN_NAME__.vst3\Contents\x86_64-win\__PLUGIN_NAME__.vst3 __PLUGIN_NAME__.dll
+    rename VST3\Release\rechoir.vst3\Contents\x86_64-win\rechoir.vst3 rechoir.dll
 )
 
 cd ..

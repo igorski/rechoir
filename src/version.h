@@ -21,8 +21,8 @@
 // Version without build number (example "1.0.3")
 #define VERSION_STR MAJOR_VERSION_STR "." SUB_VERSION_STR "." RELEASE_NUMBER_STR
 
-#define stringOriginalFilename  "__PLUGIN_NAME__.vst3"
-#define stringFileDescription   "__PLUGIN_NAME__ plugin"
+#define stringOriginalFilename  "rechoir.vst3"
+#define stringFileDescription   "Rechoir plugin"
 #define stringCompanyName       "igorski.nl\0"
 #define stringLegalCopyright    #PLUGIN_COPYRIGHT
 #define stringLegalTrademarks   "VST is a trademark of Steinberg Media Technologies GmbH"

@@ -5,16 +5,16 @@
 // Check https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/AudioUnit.html for various types
 
 /* Bundle Identifier */
-#define kAudioUnitBundleIdentifier	nl.igorski.vst.__PLUGIN_NAME__.audiounit
+#define kAudioUnitBundleIdentifier	nl.igorski.vst.rechoir.audiounit
 
 /* Version Number (needs to be in hex) */
 #define kAudioUnitVersion			0x00010000
 
 /* Company Name + Effect Name */
-#define kAUPluginName 				igorski: __PLUGIN_NAME__
+#define kAUPluginName 				igorski: Rechoir
 
 /* A product name for the audio unit, such as TremoloUnit */
-#define kAUPluginDescription 		__PLUGIN_NAME__
+#define kAUPluginDescription 		Rechoir
 
 /*
   The specific variant of the Audio Unit. The four possible types and their values are:
@@ -30,8 +30,8 @@
 #define kAUPluginManufacturer 		IGOR
 
 // Definitions for the resource file
-#define kAudioUnitName				"igorski: __PLUGIN_NAME__" // same as kAUPluginName
-#define kAudioUnitDescription	    "__PLUGIN_NAME__" // same as kAUPluginDescription
+#define kAudioUnitName				"igorski: Rechoir" // same as kAUPluginName
+#define kAudioUnitDescription	    "Rechoir" // same as kAUPluginDescription
 #define kAudioUnitType				'aufx' // same as kAUPluginType
 #define kAudioUnitComponentSubType	'dely' // same as kAUPluginSubType
 #define kAudioUnitComponentManuf    'IGOR' // same as kAUPluginManufacturer
