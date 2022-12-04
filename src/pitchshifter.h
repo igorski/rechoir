@@ -91,12 +91,12 @@ class PitchShifter
 
         long gRover = false;
 
-        float magn, phase, tmp, window, real, imag, freqPerBin, expct, invFftFrameSizePI2, invFftFrameSize2, osampPI2;
+        float magn, phase, tmp, window, real, imag, freqPerBin, expct, invFftFrameSizePI2, invFftFrameSize2, osampPI2, fftFrameSizeLog;
         long qpd, index, inFifoLatency, stepSize, osamp;
 
         // inlining this FFT routine (by S.M. Bernsee, 1996) provides a 21% performance boost
 
-        inline void smbFft( float *fftBuffer, long fftFrameSize, long sign )
+        inline void smbFft( float *fftBuffer, const long fftFrameSize, const float fftFrameSizeLog, const long sign )
         {
             float wr, wi, arg, *p1, *p2, temp;
             float tr, ti, ur, ui, *p1r, *p1i, *p2r, *p2i;
@@ -104,12 +104,14 @@ class PitchShifter
 
             for ( i = 2, end = doubleFftFrameSize - 2; i < end; i += 2 ) {
                 for ( bitm = 2, j = 0; bitm < doubleFftFrameSize; bitm <<= 1 ) {
-                    if ( i & bitm ) ++j;
+                    if ( i & bitm ) {
+                        ++j;
+                    }
                     j <<= 1;
                 }
                 if ( i < j ) {
-                    p1        = fftBuffer+i;
-                    p2        = fftBuffer+j;
+                    p1        = fftBuffer + i;
+                    p2        = fftBuffer + j;
                     temp      = *p1;
                     *( p1++ ) = *p2;
                     *( p2++ ) = temp;
@@ -119,8 +121,8 @@ class PitchShifter
                 }
             }
 
-            // 0.69314... being std::log( 2.f )
-            for ( k = 0, le = 2, end = ( long )( std::log( fftFrameSize ) / 0.6931471805599453f + .5f ); k < end; ++k )
+            // 0.69314... is the result of std::log( 2.f )
+            for ( k = 0, le = 2, end = ( long )( fftFrameSizeLog / 0.6931471805599453f + .5f ); k < end; ++k )
             {
                 le <<= 1;
                 le2  = le >> 1;
