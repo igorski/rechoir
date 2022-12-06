@@ -125,6 +125,69 @@ namespace Calc {
                 return -round( 1.f / 16.f - (( float ) scaled - 3.f ));
         }
     }
+
+    // faster alternatives for sine, cosine, atan2 and natural log calculations
+    // there will be some margins of error, but depending on use
+    // case, these can be quite acceptable though be careful before
+    // applying these anywhere in a DSP process
+
+    inline float fastCos( float x )
+    {
+        x *= 0.15915494309189535f; // 1 / ( 2 * PI );
+        x -= 0.25f + static_cast<int>( x + 0.25f );
+        x *= 16.f * (( x >= 0 ? x : -x ) - 0.5f );
+        // below adds additional precision
+        x += 0.225f * x * ( std::abs( x ) - 1.f );
+
+        return x;
+    }
+
+    inline float fastSin( float x )
+    {
+        return fastCos( x - 1.5707963267948966f ); // PI / 2
+    }
+
+    inline float fastAtan2( float y, float x )
+    {
+        // http://pubs.opengroup.org/onlinepubs/009695399/functions/atan2.html
+        // Volkan SALMA
+        /*
+    	float r, angle;
+    	float abs_y = fabs( y ) + 1e-10f; // kludge to prevent 0/0 condition
+
+        if ( x < 0.0f ) {
+    		r = ( x + abs_y ) / ( abs_y - x );
+    		angle = 2.356194490192345f; // 3.0 * M_PI / 4.0
+    	} else {
+    		r = ( x - abs_y ) / ( x + abs_y );
+    		angle = 0.7853981633974483f; // ( M_PI / 4.0 )
+    	}
+    	angle += ( 0.1963f * r * r - 0.9817f ) * r;
+    	if ( y < 0.0f ) {
+    		return( -angle ); // negate if in quad III or IV
+    	} else {
+    		return( angle );
+        }*/
+        float abs_y = std::fabs( y ) + 1e-10f; // kludge to prevent 0/0 condition
+    	float r = ( x - std::copysign( abs_y, x )) / ( abs_y + std::fabs( x ));
+    	float angle = M_PI/2.f - std::copysign( 0.7853981633974483f /* M_PI / 4.0 */, x );
+
+    	angle += ( 0.1963f * r * r - 0.9817f ) * r;
+
+    	return std::copysign( angle, y );
+    }
+
+    inline float fastLog( float x )
+    {
+        unsigned int bx = * ( unsigned int* ) ( &x );
+        unsigned int ex = bx >> 23;
+        signed int t    = ( signed int ) ex - ( signed int ) 127;
+        unsigned int s  = ( t < 0 ) ? ( -t ) : t;
+        bx = 1065353216 | ( bx & 8388607 );
+        x  = * ( float* ) ( &bx );
+
+        return -1.49278f + ( 2.11263f + ( -0.729104f + 0.10969f * x ) * x ) * x + 0.6931471806f * t;
+    }
 }
 }
 

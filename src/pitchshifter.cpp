@@ -47,6 +47,8 @@ PitchShifter::PitchShifter( long osampAmount, int instanceNum )
     expct         = VST::TWO_PI * ( float ) stepSize /( float ) FFT_FRAME_SIZE;
     inFifoLatency = FFT_FRAME_SIZE - stepSize;
 
+    fftFrameSizeLog = std::log( FFT_FRAME_SIZE );
+
     /* initialize our static arrays */
 
     memset( gInFIFO,      0, sizeof( float ) * MAX_FRAME_LENGTH );
@@ -135,146 +137,145 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
         channelBuffer[ i ] = gOutFIFO[ gRover - inFifoLatency ];
         gRover++;
 
-        // when sufficient data is available, start processing
+        if ( gRover < FFT_FRAME_SIZE ) {
+            continue; // need more input before we can go on
+        }
 
-        if ( gRover >= FFT_FRAME_SIZE )
-        {
-            gRover = inFifoLatency;
+        gRover = inFifoLatency;
 
-            /* do windowing and re,im interleave */
+        // windowing and re,im interleaving
 
 /*              TODO: optimize window calculation like below
-            for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, ++n, ++n, t += invFftFrameSizePI2 )                {
-                window = -.5 * cos(( float ) t ) + .5;
-                gFFTworksp[ n ]     = gInFIFO[ k ] * window;
-                gFFTworksp[ n + 1 ] = 0.0;
-            }
+        for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, ++n, ++n, t += invFftFrameSizePI2 )                {
+            window = -0.5 * cos(( float ) t ) + 0.5;
+            gFFTworksp[ n ]     = gInFIFO[ k ] * window;
+            gFFTworksp[ n + 1 ] = 0.0;
+        }
 */
-            for ( k = 0, n = 0; k < FFT_FRAME_SIZE; ++k, n += 2 )
-            {
-                window              = -.5 * cos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + .5;
-                gFFTworksp[ n ]     = gInFIFO[ k ] * window;
-                gFFTworksp[ n + 1 ] = 0.;
+        for ( k = 0, n = 0; k < FFT_FRAME_SIZE; ++k, n += 2 )
+        {
+            window              = -0.5f * Calc::fastCos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
+            gFFTworksp[ n ]     = gInFIFO[ k ] * window;
+            gFFTworksp[ n + 1 ] = 0.f;
+        }
+
+        // ***************** ANALYSIS *******************
+
+        // transform
+        smbFft( gFFTworksp, FFT_FRAME_SIZE, fftFrameSizeLog, -1 );
+
+        // analysis
+
+        for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k )
+        {
+            // de-interlace FFT buffer
+            real = gFFTworksp[ k << 1 ];         // [ 2 * k ]
+            imag = gFFTworksp[ ( k << 1 ) + 1 ]; // [ ( 2 * k ) + 1 ]
+
+            // compute magnitude and phase
+            magn  = 2.f * sqrt( real * real + imag * imag );
+            phase = Calc::fastAtan2( imag, real );
+
+            // compute phase difference
+            tmp             = phase - gLastPhase[ k ];
+            gLastPhase[ k ] = phase;
+
+            // subtract expected phase difference
+            tmp -= ( float ) k * expct;
+
+            // map delta phase into +/- Pi interval
+            qpd = tmp / VST::PI;
+            if ( qpd >= 0 ) {
+                qpd += qpd & 1;
+            } else {
+                qpd -= qpd & 1;
             }
+            tmp -= VST::PI * ( float ) qpd;
 
-            /* ***************** ANALYSIS ******************* */
-            /* do transform */
-            smbFft( gFFTworksp, FFT_FRAME_SIZE, -1 );
+            // get deviation from bin frequency from the +/- Pi interval
+            tmp *= osampPI2;
 
-            /* this is the analysis step */
+            // compute the k-th partials' true frequency
+            tmp = (( float ) k + tmp ) * freqPerBin;
 
-            for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k )
-            {
-                /* de-interlace FFT buffer */
-                real = gFFTworksp[ k << 1 ];         // [ 2 * k ]
-                imag = gFFTworksp[ ( k << 1 ) + 1 ]; // [ ( 2 * k ) + 1 ]
+            // store magnitude and true frequency in analysis arrays
+            gAnaMagn[ k ] = magn;
+            gAnaFreq[ k ] = tmp;
+        }
 
-                /* compute magnitude and phase */
-                magn  = 2. * sqrt( real * real + imag * imag );
-                phase = atan2( imag, real );
+        /* ***************** PROCESSING ******************* */
+        /* this does the actual pitch shifting */
+        memset( gSynMagn, 0, sizeof( float ) * FFT_FRAME_SIZE );
+        memset( gSynFreq, 0, sizeof( float ) * FFT_FRAME_SIZE );
 
-                /* compute phase difference */
-                tmp             = phase - gLastPhase[ k ];
-                gLastPhase[ k ] = phase;
-
-                /* subtract expected phase difference */
-                tmp -= ( float ) k * expct;
-
-                /* map delta phase into +/- Pi interval */
-                qpd = tmp / VST::PI;
-                if ( qpd >= 0 ) {
-                    qpd += qpd & 1;
-                } else {
-                    qpd -= qpd & 1;
-                }
-                tmp -= VST::PI * ( float ) qpd;
-
-                /* get deviation from bin frequency from the +/- Pi interval */
-                tmp *= osampPI2;
-
-                /* compute the k-th partials' true frequency */
-                tmp = (( float ) k + tmp ) * freqPerBin;
-
-                /* store magnitude and true frequency in analysis arrays */
-                gAnaMagn[ k ] = magn;
-                gAnaFreq[ k ] = tmp;
+        for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k ) {
+            index = k * _pitchShift;
+            if ( index <= FFT_FRAME_SIZE_HALF ) {
+                gSynMagn[ index ] += gAnaMagn[ k ];
+                gSynFreq[ index ]  = gAnaFreq[ k ] * _pitchShift;
             }
+        }
 
-            /* ***************** PROCESSING ******************* */
-            /* this does the actual pitch shifting */
-            memset( gSynMagn, 0, sizeof( float ) * FFT_FRAME_SIZE );
-            memset( gSynFreq, 0, sizeof( float ) * FFT_FRAME_SIZE );
+        /* ***************** SYNTHESIS ******************* */
+        /* this is the synthesis step */
+        for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k ) {
+            /* get magnitude and true frequency from synthesis arrays */
+            magn = gSynMagn[ k ];
+            tmp  = gSynFreq[ k ];
 
-            for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k ) {
-                index = k * _pitchShift;
-                if ( index <= FFT_FRAME_SIZE_HALF ) {
-                    gSynMagn[ index ] += gAnaMagn[ k ];
-                    gSynFreq[ index ]  = gAnaFreq[ k ] * _pitchShift;
-                }
-            }
+            /* subtract bin mid frequency */
+            tmp -= ( float ) k * freqPerBin;
 
-            /* ***************** SYNTHESIS ******************* */
-            /* this is the synthesis step */
-            for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k ) {
-                /* get magnitude and true frequency from synthesis arrays */
-                magn = gSynMagn[ k ];
-                tmp  = gSynFreq[ k ];
+            /* get bin deviation from freq deviation */
+            tmp /= freqPerBin;
 
-                /* subtract bin mid frequency */
-                tmp -= ( float ) k * freqPerBin;
+            /* take osamp into account */
+            tmp = VST::TWO_PI * tmp / osamp;
 
-                /* get bin deviation from freq deviation */
-                tmp /= freqPerBin;
+            /* add the overlap phase advance back in */
+            tmp += ( float ) k * expct;
 
-                /* take osamp into account */
-                tmp = VST::TWO_PI * tmp / osamp;
+            /* accumulate delta phase to get bin phase */
+            gSumPhase[ k ] += tmp;
+            phase           = gSumPhase[ k ];
 
-                /* add the overlap phase advance back in */
-                tmp += ( float ) k * expct;
+            /* get real and imag part and re-interleave */
+            gFFTworksp[ k << 1 ] = magn * Calc::fastCos( phase );     // [ 2 * k ]
+            gFFTworksp[ ( k << 1 ) + 1 ] = magn * Calc::fastSin( phase ); // [ (2 * k) + 1 ]
+        }
 
-                /* accumulate delta phase to get bin phase */
-                gSumPhase[ k ] += tmp;
-                phase           = gSumPhase[ k ];
+        // zero negative frequencies
+        for ( k = FFT_FRAME_SIZE + 2; k < MAX_FRAME_LENGTH; ++k ) {
+            gFFTworksp[ k ] = 0.;
+        }
 
-                /* get real and imag part and re-interleave */
-                gFFTworksp[ k << 1 ]     = magn * cos( phase );     // [ 2 * k ]
-                gFFTworksp[ ( k << 1 ) + 1 ] = magn * sin( phase ); // [ (2 * k) + 1 ]
-            }
+        // inverse transform
+        smbFft( gFFTworksp, FFT_FRAME_SIZE, fftFrameSizeLog, 1 );
 
-            /* zero negative frequencies */
-            //for ( k = FFT_FRAME_SIZE + 2; k < 2 * FFT_FRAME_SIZE; ++k )
-            for ( k = FFT_FRAME_SIZE + 2; k < MAX_FRAME_LENGTH; ++k ) {
-                gFFTworksp[ k ] = 0.;
-            }
+        /* do windowing and add to output accumulator */
+        /*
+        TODO: optimize window calculation like below
+        for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, ++n, ++n, t += invFftFrameSizePI2 ){
+            window             = -0.5 * cos(( float ) t ) + 0.5;
+            gOutputAccum[ k ] += window * gFFTworksp[ n ] * invFftFrameSize2;
+        }
+        */
+        for ( k = 0; k < FFT_FRAME_SIZE; ++k )
+        {
+            window = -0.5f * Calc::fastCos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
+            gOutputAccum[ k ] += 2.f * window * gFFTworksp[ 2 * k ] / ( FFT_FRAME_SIZE_HALF * osamp );
+        }
 
-            /* do inverse transform */
-            smbFft( gFFTworksp, FFT_FRAME_SIZE, 1 );
+        for ( k = 0; k < stepSize; ++k ) {
+            gOutFIFO[ k ] = gOutputAccum[ k ];
+        }
 
-            /* do windowing and add to output accumulator */
-            /*
-            TODO: optimize window calculation like below
-            for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, ++n, ++n, t += invFftFrameSizePI2 ){
-                window             = -.5 * cos(( float ) t ) + .5;
-                gOutputAccum[ k ] += window * gFFTworksp[ n ] * invFftFrameSize2;
-            }
-            */
-            for ( k = 0; k < FFT_FRAME_SIZE; ++k )
-            {
-                window = -0.5f * cos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
-                gOutputAccum[ k ] += 2.f * window * gFFTworksp[ 2 * k ] / ( FFT_FRAME_SIZE_HALF * osamp );
-            }
+        // shift accumulator
+        memmove( gOutputAccum, gOutputAccum + stepSize, FFT_FRAME_SIZE * sizeof( float ));
 
-            for ( k = 0; k < stepSize; ++k ) {
-                gOutFIFO[ k ] = gOutputAccum[ k ];
-            }
-
-            /* shift accumulator */
-            memmove( gOutputAccum, gOutputAccum + stepSize, FFT_FRAME_SIZE * sizeof( float ));
-
-            /* move input FIFO */
-            for ( k = 0; k < inFifoLatency; ++k ) {
-                gInFIFO[ k ] = gInFIFO[ k + stepSize ];
-            }
+        // move input FIFO
+        for ( k = 0; k < inFifoLatency; ++k ) {
+            gInFIFO[ k ] = gInFIFO[ k + stepSize ];
         }
     }
 }
