@@ -58,13 +58,8 @@ class PluginProcess {
         void setDelayFeedback( float value );
         void setDelayMix( float value );
 
-        void setPitchShift( float value );
-        void setHarmony( float value, bool syncToBeat );
-        void setHarmonyLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs );
-
-        bool isHarmonized() {
-            return _harmonize > 0.f;
-        }
+        void setPitchShift( float value, float harmony, bool syncToLFO );
+        void setSyncLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs );
 
         void enableReverb( bool enabled ) {
             _reverbEnabled = enabled;
@@ -100,9 +95,6 @@ class PluginProcess {
         int _amountOfChannels;
         bool _reverbEnabled = false;
         bool _filterEnabled = false;
-
-        float _pitchShift = 1.f;
-        float _harmonize  = 0.f;
 
         double _tempo;
         int32 _timeSigNumerator;

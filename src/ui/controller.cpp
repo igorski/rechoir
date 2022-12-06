@@ -147,7 +147,7 @@ tresult PLUGIN_API PluginController::initialize( FUnknown* context )
 
 
     parameters.addParameter(
-        USTRING( "Modulate scale" ), 0, 1, 0, ParameterInfo::kCanAutomate, kSyncChoirId, unitId
+        USTRING( "Modulate pitches" ), 0, 1, 0, ParameterInfo::kCanAutomate, kSyncShiftId, unitId
     );
 
     RangeParameter* oddSpeedParam = new RangeParameter(
@@ -247,10 +247,10 @@ tresult PLUGIN_API PluginController::setComponentState( IBStream* state )
         return kResultFalse;
     setParamNormalized( kFilterResonanceId, savedFilterResonance );
 
-    int32 savedSyncChoir = 0;
-    if ( streamer.readInt32( savedSyncChoir ) == false )
+    int32 savedSyncShift = 0;
+    if ( streamer.readInt32( savedSyncShift ) == false )
         return kResultFalse;
-    setParamNormalized( kSyncChoirId, savedSyncChoir ? 1 : 0 );
+    setParamNormalized( kSyncShiftId, savedSyncShift ? 1 : 0 );
 
     float savedOddSpeed = 0.35f;
     if ( streamer.readFloat( savedOddSpeed ) == false )
@@ -477,7 +477,7 @@ tresult PLUGIN_API PluginController::getParamStringByValue( ParamID tag, ParamVa
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;
 
-        case kSyncChoirId:
+        case kSyncShiftId:
             sprintf( text, "%s", ( valueNormalized == 0 ) ? "Off" : "On" );
             Steinberg::UString( string, 128 ).fromAscii( text );
             return kResultTrue;

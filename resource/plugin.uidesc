@@ -112,9 +112,9 @@
               min-value="0.f" mouse-enabled="true" opacity="1" skip-handle-drawing="true" transparent="false"
               value-inset="5" wants-focus="true" wheel-inc-value="0.1" zoom-factor="1.5"
         />
-        <!-- Modulate scale -->
+        <!-- Modulate pitches -->
         <view
-              control-tag="Unit1::syncChoirParam" class="CCheckBox" origin="59, 425" size="25, 40"
+              control-tag="Unit1::syncShiftParam" class="CCheckBox" origin="59, 425" size="25, 40"
               max-value="1" min-value="0" default-value="0"
               background-offset="0, 0" boxfill-color="~ TransparentCColor" autosize="bottom"
               boxframe-color="~ TransparentCColor" checkmark-color="~ WhiteCColor"
@@ -200,7 +200,7 @@
         <control-tag name="Unit1::decimatorParam" tag="7" />
         <control-tag name="Unit1::filterCutoffParam" tag="8" />
         <control-tag name="Unit1::filterResonanceParam" tag="9" />
-        <control-tag name="Unit1::syncChoirParam" tag="10" />
+        <control-tag name="Unit1::syncShiftParam" tag="10" />
         <control-tag name="Unit1::oddSpeedParam" tag="11" />
         <control-tag name="Unit1::evenSpeedParam" tag="12" />
         <control-tag name="Unit1::linkLFOsParam" tag="13" />

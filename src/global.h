@@ -55,7 +55,8 @@ namespace VST {
         AUGMENTED,
         DORIAN,
         MINOR,
-        DIMINISHED
+        DIMINISHED,
+        CUSTOM
     };
 
     // scale notes (in order of Scale enum!)

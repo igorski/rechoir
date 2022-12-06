@@ -164,8 +164,8 @@ const MODEL = [
         ui: { x: 839, y: 386, w: 126, h: 128 }
     },
     {
-        name: "syncChoir",
-        descr: "Modulate scale",
+        name: "syncShift",
+        descr: "Modulate pitches",
         value: { min: "0", max: "1", def: "0", type: "bool" },
         ui: { x: 59, y: 425, w: 25, h: 40 }
     },

@@ -70,33 +70,35 @@ PitchShifter::~PitchShifter()
 
 /* public methods */
 
-WaveTable* PitchShifter::getWaveTable()
+void PitchShifter::setPitchShift( float pitch, bool setDirect )
 {
-    return _waveTable;
+    _baseShift = pitch;
+
+    if ( setDirect ) {
+        _pitchShift = pitch;
+    }
 }
 
-void PitchShifter::setScale( VST::Scale scale, bool syncActive )
+void PitchShifter::setScale( VST::Scale scale )
 {
     if ( scale != _scale ) {
         _scale = scale;
         alignPitchToScaleNote();
     }
-    syncScaleToLFO( syncActive );
 }
 
-void PitchShifter::syncScaleToLFO( bool syncActive )
+void PitchShifter::syncShiftToLFO( bool syncActive )
 {
-    _syncScaleToLFO = syncActive;
+    _syncShiftToLFO = syncActive;
+}
+
+WaveTable* PitchShifter::getWaveTable()
+{
+    return _waveTable;
 }
 
 void PitchShifter::process( float* channelBuffer, int bufferSize )
 {
-    // pitch shifted to "normal" ? omit processing and save CPU cycles
-
-    if ( pitchShift == UNCHANGED ) {
-        return;
-    }
-
     int i, n, t;
     long k;
 
@@ -121,13 +123,19 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             handleLFOBeatTrigger();
         }
 
-        /* As long as we have not yet collected enough data just read in */
+        // pitch shift at neutral value ? omit processing and save CPU cycles
+
+        if ( _pitchShift == UNCHANGED ) {
+            continue;
+        }
+
+        // read incoming audio data and into buffer for analysis
 
         gInFIFO[ gRover ]  = channelBuffer[ i ];
         channelBuffer[ i ] = gOutFIFO[ gRover - inFifoLatency ];
         gRover++;
 
-        /* now we have enough data for processing */
+        // when sufficient data is available, start processing
 
         if ( gRover >= FFT_FRAME_SIZE )
         {
@@ -198,10 +206,10 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             memset( gSynFreq, 0, sizeof( float ) * FFT_FRAME_SIZE );
 
             for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k ) {
-                index = k * pitchShift;
+                index = k * _pitchShift;
                 if ( index <= FFT_FRAME_SIZE_HALF ) {
                     gSynMagn[ index ] += gAnaMagn[ k ];
-                    gSynFreq[ index ]  = gAnaFreq[ k ] * pitchShift;
+                    gSynFreq[ index ]  = gAnaFreq[ k ] * _pitchShift;
                 }
             }
 
@@ -277,7 +285,7 @@ void PitchShifter::handleLFOBeatTrigger()
 {
     _isOpen = !_isOpen; // update LFO "gate" status
 
-    if ( !_syncScaleToLFO ) {
+    if ( !_syncShiftToLFO ) {
         return;
     }
 
@@ -292,8 +300,13 @@ void PitchShifter::handleLFOBeatTrigger()
 
 void PitchShifter::alignPitchToScaleNote()
 {
+    if ( _scale == VST::Scale::CUSTOM ) {
+        // note the second pitch is slightly above UNCHANGED to prevent pops when switching between pitches
+        _pitchShift = _noteIndex == 0 ? _baseShift : 1.0001f;
+        return;
+    }
     int interval = VST::SCALE_NOTES[ _scale ][ _noteIndex ];
-    pitchShift = ( interval >= 0 ) ? pow( 1.05946f, interval ) : pow( 0.94387f, interval );
+    _pitchShift = ( interval >= 0 ) ? pow( 1.05946f, interval ) : pow( 0.94387f, interval );
 }
 
 } // E.O. namespace Igorski

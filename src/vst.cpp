@@ -172,9 +172,9 @@ tresult PLUGIN_API Rechoir::process( ProcessData& data )
                             fFilterResonance = ( float ) value;
                         break;
 
-                    case kSyncChoirId:
+                    case kSyncShiftId:
                         if ( paramQueue->getPoint( numPoints - 1, sampleOffset, value ) == kResultTrue )
-                            fSyncChoir = ( value > 0.5f );
+                            fSyncShift = ( value > 0.5f );
                         break;
 
                     case kOddSpeedId:
@@ -211,7 +211,7 @@ tresult PLUGIN_API Rechoir::process( ProcessData& data )
         pluginProcess->setTempo(
             data.processContext->tempo, data.processContext->timeSigNumerator, data.processContext->timeSigDenominator
         );
-        pluginProcess->setHarmonyLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
+        pluginProcess->setSyncLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
     }
 
     //---2) Read input events-------------
@@ -337,8 +337,8 @@ tresult PLUGIN_API Rechoir::setState( IBStream* state )
     if ( streamer.readFloat( savedFilterResonance ) == false )
         return kResultFalse;
 
-    int32 savedSyncChoir = 0;
-    if ( streamer.readInt32( savedSyncChoir ) == false )
+    int32 savedSyncShift = 0;
+    if ( streamer.readInt32( savedSyncShift ) == false )
         return kResultFalse;
 
     float savedOddSpeed = 0.f;
@@ -369,7 +369,7 @@ tresult PLUGIN_API Rechoir::setState( IBStream* state )
     fDecimator = savedDecimator;
     fFilterCutoff = savedFilterCutoff;
     fFilterResonance = savedFilterResonance;
-    fSyncChoir = savedSyncChoir > 0;
+    fSyncShift = savedSyncShift > 0;
     fOddSpeed = savedOddSpeed;
     fEvenSpeed = savedEvenSpeed;
     fLinkLFOs = savedLinkLFOs > 0;
@@ -431,7 +431,7 @@ tresult PLUGIN_API Rechoir::getState( IBStream* state )
     streamer.writeFloat( fDecimator );
     streamer.writeFloat( fFilterCutoff );
     streamer.writeFloat( fFilterResonance );
-    streamer.writeInt32( fSyncChoir ? 1 : 0 );
+    streamer.writeInt32( fSyncShift ? 1 : 0 );
     streamer.writeFloat( fOddSpeed );
     streamer.writeFloat( fEvenSpeed );
     streamer.writeInt32( fLinkLFOs ? 1 : 0 );
@@ -571,9 +571,8 @@ void Rechoir::syncModel()
     bool isShiftUp   = fPitchShift >= PitchShifter::UNCHANGED;
     float shiftValue = isShiftUp ? Calc::scale( fPitchShift, 1.f, PitchShifter::OCTAVE_UP ) : fPitchShift + PitchShifter::OCTAVE_DOWN;
 
-    pluginProcess->setPitchShift( shiftValue );
-    pluginProcess->setHarmony( fHarmonize, Calc::toBool( fSyncChoir ));
-    pluginProcess->setHarmonyLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
+    pluginProcess->setPitchShift( shiftValue, fHarmonize, Calc::toBool( fSyncShift ));
+    pluginProcess->setSyncLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
 
     pluginProcess->decimator->setRate( fDecimator > 0.99f ? 0.49f : Calc::inverseNormalize( fDecimator ) * 0.5f );
     pluginProcess->filter->updateProperties( fFilterCutoff, Calc::inverseNormalize( fFilterResonance ));

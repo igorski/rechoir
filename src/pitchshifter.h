@@ -67,12 +67,11 @@ class PitchShifter
         // The routine takes a pitchShift factor value which is between 0.5 (one octave down)
         // and 2. (one octave up). A value of exactly 1 does not change the pitch
 
-        float pitchShift = UNCHANGED;
+        void setPitchShift( float pitch, bool setDirect );
+        void setScale( VST::Scale scale );
+        void syncShiftToLFO( bool syncActive );
 
         WaveTable* getWaveTable();
-        void setScale( VST::Scale scale, bool syncActive );
-        void syncScaleToLFO( bool syncActive );
-
         void process( float* channelBuffer, int bufferSize );
 
     private:
@@ -86,6 +85,9 @@ class PitchShifter
         float gAnaMagn    [ MAX_FRAME_LENGTH ];
         float gSynFreq    [ MAX_FRAME_LENGTH ];
         float gSynMagn    [ MAX_FRAME_LENGTH ];
+
+        float _pitchShift = UNCHANGED; // current pitch shift value
+        float _baseShift  = UNCHANGED; // base pitch shift value to return to when syncing
 
         long gRover = false;
 
@@ -155,7 +157,7 @@ class PitchShifter
 
         float _isOpen        = false;
         VST::Scale _scale    = VST::Scale::NEUTRAL;
-        bool _syncScaleToLFO = false;
+        bool _syncShiftToLFO = false;
         int _noteIndex       = 0;
 
         void alignPitchToScaleNote();

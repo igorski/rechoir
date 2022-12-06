@@ -42,7 +42,7 @@ enum
     kDecimatorId = 7,    // Decimation
     kFilterCutoffId = 8,    // Filter cutoff
     kFilterResonanceId = 9,    // Filter resonance
-    kSyncChoirId = 10,    // Modulate scale
+    kSyncShiftId = 10,    // Modulate pitches
     kOddSpeedId = 11,    // Odd channel speed
     kEvenSpeedId = 12,    // Even channel speed
     kLinkLFOsId = 13,    // Sync choir

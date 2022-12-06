@@ -121,39 +121,23 @@ void PluginProcess::setDelayFeedback( float value )
     _delayFeedback = value;
 }
 
-void PluginProcess::setPitchShift( float value )
+void PluginProcess::setPitchShift( float value, float harmony, bool syncToLFO )
 {
     float pitch = std::fmin( PitchShifter::OCTAVE_UP, std::fmax( PitchShifter::OCTAVE_DOWN, value ));
 
-    _pitchShift = pitch;
+    bool isHarmonized = harmony > 0.f;
+    bool setDirect    = !isHarmonized;
 
-    if ( isHarmonized() ) {
-        return;
-    }
+    VST::Scale scale = isHarmonized ? static_cast<VST::Scale>(( int ) round( 6.f * harmony )) : VST::Scale::CUSTOM;
+
     for ( auto pitchShifter : *_pitchShifters ) {
-        pitchShifter->pitchShift = _pitchShift;
-        pitchShifter->syncScaleToLFO( false );
+        pitchShifter->setPitchShift( pitch, setDirect );
+        pitchShifter->setScale( scale );
+        pitchShifter->syncShiftToLFO( syncToLFO );
     }
 }
 
-void PluginProcess::setHarmony( float value, bool syncToBeat )
-{
-    _harmonize = value;
-
-    if ( !isHarmonized() ) {
-        setPitchShift( _pitchShift );
-        return;
-    }
-
-    // determine scale by integral value
-    VST::Scale scale = static_cast<VST::Scale>(( int ) round( 6.f * value ));
-
-    for ( size_t i = 0; i < _pitchShifters->size(); ++i ) {
-        _pitchShifters->at( i )->setScale( scale, syncToBeat );
-    }
-}
-
-void PluginProcess::setHarmonyLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs )
+void PluginProcess::setSyncLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs )
 {
     if ( _oddSteps == oddSteps && _evenSteps == evenSteps && _linkedLFOs == linkLFOs ) {
        // return;

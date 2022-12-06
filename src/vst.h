@@ -98,7 +98,7 @@ class Rechoir : public AudioEffect
         float fDecimator = 0.f;    // Decimation
         float fFilterCutoff = 0.5f;    // Filter cutoff
         float fFilterResonance = 0.5f;    // Filter resonance
-        bool fSyncChoir = false;    // Modulate scale
+        bool fSyncShift = false;    // Modulate pitches
         float fOddSpeed = 0.35f;    // Odd channel speed
         float fEvenSpeed = 1.f;    // Even channel speed
         bool fLinkLFOs = true;    // Sync choir
