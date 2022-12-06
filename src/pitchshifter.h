@@ -72,7 +72,7 @@ class PitchShifter
         void syncShiftToLFO( bool syncActive );
 
         WaveTable* getWaveTable();
-        void syncLFOState( PitchShifter* pitchShifter );
+        void syncLFOState( PitchShifter* pitchShifter ); // invoke when all pitch shifters oscillators are (re)linked
         void process( float* channelBuffer, int bufferSize );
 
     private:

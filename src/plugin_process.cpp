@@ -137,7 +137,7 @@ void PluginProcess::setPitchShift( float value, float harmony, bool syncToLFO )
     }
 }
 
-void PluginProcess::setSyncLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs )
+void PluginProcess::syncLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs )
 {
     if ( _oddSteps == oddSteps && _evenSteps == evenSteps && _linkedLFOs == linkLFOs ) {
        // return;

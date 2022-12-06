@@ -211,7 +211,7 @@ tresult PLUGIN_API Rechoir::process( ProcessData& data )
         pluginProcess->setTempo(
             data.processContext->tempo, data.processContext->timeSigNumerator, data.processContext->timeSigDenominator
         );
-        pluginProcess->setSyncLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
+        pluginProcess->syncLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
     }
 
     //---2) Read input events-------------
@@ -572,7 +572,7 @@ void Rechoir::syncModel()
     float shiftValue = isShiftUp ? Calc::scale( fPitchShift, 1.f, PitchShifter::OCTAVE_UP ) : fPitchShift + PitchShifter::OCTAVE_DOWN;
 
     pluginProcess->setPitchShift( shiftValue, fHarmonize, Calc::toBool( fSyncShift ));
-    pluginProcess->setSyncLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
+    pluginProcess->syncLFOSpeed( fOddSpeed, fEvenSpeed, Calc::toBool( fLinkLFOs ));
 
     pluginProcess->decimator->setRate( fDecimator > 0.99f ? 0.49f : Calc::inverseNormalize( fDecimator ) * 0.5f );
     pluginProcess->filter->updateProperties( fFilterCutoff, Calc::inverseNormalize( fFilterResonance ));

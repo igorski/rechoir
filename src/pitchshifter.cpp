@@ -83,10 +83,11 @@ void PitchShifter::setPitchShift( float pitch, bool setDirect )
 
 void PitchShifter::setScale( VST::Scale scale )
 {
-    if ( scale != _scale ) {
-        _scale = scale;
-        alignPitchToScaleNote();
+    if ( _scale == scale ) {
+        return;
     }
+    _scale = scale;
+    alignPitchToScaleNote();
 }
 
 void PitchShifter::syncShiftToLFO( bool syncActive )
@@ -101,10 +102,14 @@ WaveTable* PitchShifter::getWaveTable()
 
 void PitchShifter::syncLFOState( PitchShifter* pitchShifter )
 {
-    _isOpen    = pitchShifter->_isOpen;
-    _noteIndex = pitchShifter->_noteIndex;
+    _isOpen = pitchShifter->_isOpen;
+    // upon (re)linking of LFOs, every other channel should play the other note in the scale
+    // UNLESS: the pitch shifting is synced to the LFO, where we want the shifts to work in mono
+    _noteIndex = _syncShiftToLFO ? pitchShifter->_noteIndex : ( pitchShifter->_noteIndex + 1 ) % VST::NOTES_IN_SCALE;
 
     getWaveTable()->setAccumulator( pitchShifter->getWaveTable()->getAccumulator() );
+
+    alignPitchToScaleNote();
 }
 
 void PitchShifter::process( float* channelBuffer, int bufferSize )
@@ -154,7 +159,7 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
         // windowing and re,im interleaving
 
 /*              TODO: optimize window calculation like below
-        for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, ++n, ++n, t += invFftFrameSizePI2 )                {
+        for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, ++n, ++n, t += invFftFrameSizePI2 ) {
             window = -0.5 * cos(( float ) t ) + 0.5;
             gFFTworksp[ n ]     = gInFIFO[ k ] * window;
             gFFTworksp[ n + 1 ] = 0.0;
@@ -167,12 +172,11 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             gFFTworksp[ n + 1 ] = 0.f;
         }
 
-        // ***************** ANALYSIS *******************
-
         // transform
+
         smbFft( gFFTworksp, FFT_FRAME_SIZE, fftFrameSizeLog, -1 );
 
-        // analysis
+        // analysis stage
 
         for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k )
         {
@@ -211,8 +215,8 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             gAnaFreq[ k ] = tmp;
         }
 
-        /* ***************** PROCESSING ******************* */
-        /* this does the actual pitch shifting */
+        // the actual pitch shifting stage
+
         memset( gSynMagn, 0, sizeof( float ) * FFT_FRAME_SIZE );
         memset( gSynFreq, 0, sizeof( float ) * FFT_FRAME_SIZE );
 
@@ -224,30 +228,27 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             }
         }
 
-        /* ***************** SYNTHESIS ******************* */
-        /* this is the synthesis step */
+        // synthesis stage
+
         for ( k = 0; k <= FFT_FRAME_SIZE_HALF; ++k ) {
-            /* get magnitude and true frequency from synthesis arrays */
+            // get magnitude and true frequency from synthesis arrays
+
             magn = gSynMagn[ k ];
             tmp  = gSynFreq[ k ];
 
-            /* subtract bin mid frequency */
-            tmp -= ( float ) k * freqPerBin;
 
-            /* get bin deviation from freq deviation */
-            tmp /= freqPerBin;
+            tmp -= ( float ) k * freqPerBin; // subtract bin mid frequency
+            tmp /= freqPerBin; // get bin deviation from freq deviation
+            tmp = VST::TWO_PI * tmp / osamp; // take osamp into account
+            tmp += ( float ) k * expct; // add the overlap phase advance back in
 
-            /* take osamp into account */
-            tmp = VST::TWO_PI * tmp / osamp;
+            // accumulate delta phase to get bin phase
 
-            /* add the overlap phase advance back in */
-            tmp += ( float ) k * expct;
-
-            /* accumulate delta phase to get bin phase */
             gSumPhase[ k ] += tmp;
             phase           = gSumPhase[ k ];
 
-            /* get real and imag part and re-interleave */
+            // get real and imag part and re-interleave
+
             gFFTworksp[ k << 1 ] = magn * Calc::fastCos( phase );     // [ 2 * k ]
             gFFTworksp[ ( k << 1 ) + 1 ] = magn * Calc::fastSin( phase ); // [ (2 * k) + 1 ]
         }
@@ -260,7 +261,7 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
         // inverse transform
         smbFft( gFFTworksp, FFT_FRAME_SIZE, fftFrameSizeLog, 1 );
 
-        /* do windowing and add to output accumulator */
+        // windowing and add to output accumulator
         /*
         TODO: optimize window calculation like below
         for ( k = 0, n = 0, t = 0; k < FFT_FRAME_SIZE; ++k, ++n, ++n, t += invFftFrameSizePI2 ){
@@ -268,8 +269,7 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
             gOutputAccum[ k ] += window * gFFTworksp[ n ] * invFftFrameSize2;
         }
         */
-        for ( k = 0; k < FFT_FRAME_SIZE; ++k )
-        {
+        for ( k = 0; k < FFT_FRAME_SIZE; ++k ) {
             window = -0.5f * Calc::fastCos( VST::TWO_PI * ( float ) k / fftFrameSizeFloat ) + 0.5f;
             gOutputAccum[ k ] += 2.f * window * gFFTworksp[ 2 * k ] / ( FFT_FRAME_SIZE_HALF * osamp );
         }
@@ -279,9 +279,11 @@ void PitchShifter::process( float* channelBuffer, int bufferSize )
         }
 
         // shift accumulator
+
         memmove( gOutputAccum, gOutputAccum + stepSize, FFT_FRAME_SIZE * sizeof( float ));
 
         // move input FIFO
+
         for ( k = 0; k < inFifoLatency; ++k ) {
             gInFIFO[ k ] = gInFIFO[ k + stepSize ];
         }
@@ -298,13 +300,13 @@ void PitchShifter::handleLFOBeatTrigger()
         return;
     }
 
-    // update current shift
-
-    alignPitchToScaleNote();
-
     if ( ++_noteIndex >= VST::NOTES_IN_SCALE ) {
         _noteIndex = 0;
     }
+    
+    // update current shift
+
+    alignPitchToScaleNote();
 }
 
 void PitchShifter::alignPitchToScaleNote()

@@ -59,7 +59,7 @@ class PluginProcess {
         void setDelayMix( float value );
 
         void setPitchShift( float value, float harmony, bool syncToLFO );
-        void setSyncLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs );
+        void syncLFOSpeed( float oddSteps, float evenSteps, bool linkLFOs );
 
         void enableReverb( bool enabled ) {
             _reverbEnabled = enabled;
