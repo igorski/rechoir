@@ -155,8 +155,7 @@ void PluginProcess::setSyncLFOSpeed( float oddSteps, float evenSteps, bool linkL
         for ( size_t i = 0; i < _amountOfChannels; ++i ) {
             bool isEvenChannel = ( i % 2 ) == 1;
             if ( isEvenChannel ) {
-                float lastAccumulator = _pitchShifters->at( i - 1 )->getWaveTable()->getAccumulator();
-                _pitchShifters->at( i )->getWaveTable()->setAccumulator( lastAccumulator );
+                _pitchShifters->at( i )->syncLFOState( _pitchShifters->at( i - 1 ));
             }
         }
     }

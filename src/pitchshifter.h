@@ -72,6 +72,7 @@ class PitchShifter
         void syncShiftToLFO( bool syncActive );
 
         WaveTable* getWaveTable();
+        void syncLFOState( PitchShifter* pitchShifter );
         void process( float* channelBuffer, int bufferSize );
 
     private:

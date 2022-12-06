@@ -99,6 +99,14 @@ WaveTable* PitchShifter::getWaveTable()
     return _waveTable;
 }
 
+void PitchShifter::syncLFOState( PitchShifter* pitchShifter )
+{
+    _isOpen    = pitchShifter->_isOpen;
+    _noteIndex = pitchShifter->_noteIndex;
+
+    getWaveTable()->setAccumulator( pitchShifter->getWaveTable()->getAccumulator() );
+}
+
 void PitchShifter::process( float* channelBuffer, int bufferSize )
 {
     int i, n, t;
