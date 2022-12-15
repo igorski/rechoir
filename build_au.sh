@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 clear
 echo "Flushing build caches and output folders"
-rm -rf build
+#rm -rf build
 echo "Building project"
 echo "----------------"
 
@@ -21,9 +21,12 @@ if [ -n "${VST3_SDK_ROOT}" ]; then
   DVST3_SDK_ROOT="-DVST3_SDK_ROOT=${VST3_SDK_ROOT}"
 fi
 
-# run CMake using Audio Unit build target
-cmake -GXcode ${DVST3_SDK_ROOT} "-DCMAKE_OSX_ARCHITECTURES=x86_64" "-DCREATE_AUDIO_UNIT=ON" "-DSMTG_COREAUDIO_SDK_PATH=/Library/CoreAudioSDK/CoreAudio" "${BASEDIR}"
-xcodebuild -configuration Release build
-# "OTHER_LDFLAGS=-force_load ${VST3_SDK_ROOT}/build/lib/Release/libsdk_hosting.a"
+# run CMake file using Jamba Audio Unit build target (also fetches Jamba through fetch_jamba.cmake)
+cmake -GXcode ${DVST3_SDK_ROOT} "-DCMAKE_OSX_ARCHITECTURES=x86_64" "-DJAMBA_ENABLE_AUDIO_UNIT=ON" ${BASEDIR}
+
+# build Audio Unit using Jamba in Release mode
+
+sh jamba.sh build-au -r
+sh jamba.sh install-au
 
 cd ..

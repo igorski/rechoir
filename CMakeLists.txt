@@ -165,34 +165,42 @@ set(vst_resources
 )
 set(vst_ui_descr "resource/plugin.uidesc")
 
-#######
-# VST #
-#######
-
-set(steinberg_libs "base" "pluginterfaces" "sdk" "vstgui_support" "vstgui_uidescription" "vstgui")
-smtg_add_vst3plugin(${target} ${vst_sources})
-
 ##############
 # Audio Unit #
 ##############
 
-if (CREATE_AUDIO_UNIT)
-    set(SDK_ROOT ${VST3_SDK_ROOT})
-    include(SMTG_AddVST3AuV2)
-    set(steinberg_libs ${steinberg_libs} "auwrapper" "sdk_hosting")
-    smtg_target_add_auv2(${target}-au
-        BUNDLE_NAME ${target}
-        BUNDLE_IDENTIFIER nl.igorski.vst.rechoir.audiounit
-        INFO_PLIST_TEMPLATE ${CMAKE_CURRENT_SOURCE_DIR}/audio-unit/Info.plist
-        VST3_PLUGIN_TARGET ${target}
+if (JAMBA_ENABLE_AUDIO_UNIT)
+    include(jamba.cmake)
+
+    configure_file(src/version.h ${CMAKE_BINARY_DIR}/generated/version.h)
+    include_directories(${CMAKE_BINARY_DIR}/generated/)
+
+    jamba_add_vst_plugin(
+        TARGET                "${target}" # name of CMake target for the plugin
+        RELEASE_FILENAME      "rechoir" # filename for the plugin
+        RELEASE_SNAPSHOTS     "resource/background.png"# "${RES_DIR}/F7412A98069E438EBF721F95826A554D_snapshot_2.0x.png"
+        ARCHIVE_ARCHITECTURE  "${JAMBA_ARCHIVE_ARCHITECTURE}"
+        TARGETS_PREFIX        "jmb_" # prefix used by all targets directly linked to this plugin
+        VST_SOURCES           "${vst_sources}" # the source files that compose the plugin
+        INCLUDE_DIRECTORIES   "${VERSION_DIR}" # we add the version folder to the list of includes
+        UIDESC                "${vst_ui_descr}" # the main xml file for the GUI
+        RESOURCES             "${vst_resources}" # the resources for the GUI (png files)
+        TEST_CASE_SOURCES     "${test_case_sources}" # the source files containing the test cases
+    #    TEST_SOURCES          "${CPP_SOURCES}/xxx.cpp" # individual files required for compiling tests but we could add ${vst_sources} if we needed more
+    #    TEST_LINK_LIBRARIES   "jamba" # the libraries needed for linking the tests (if your tests don't depend on Jamba you can comment this out)
     )
-    set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_OTHER_LDFLAGS "-all_load")
-endif()
 
-#######################
-# Steinberg libraries #
-#######################
+else()
 
+#######
+# VST #
+#######
+
+smtg_add_vst3plugin(${target} ${vst_sources})
+
+## include Steinberg libraries
+
+set(steinberg_libs "base" "pluginterfaces" "sdk" "vstgui_support" "vstgui_uidescription" "vstgui")
 include_directories(${VSTSDK_INCLUDE_DIR})
 foreach(lib IN ITEMS ${steinberg_libs})
     if(UNIX)
@@ -210,10 +218,6 @@ target_sources(${target} PRIVATE
     ${VST3_SDK_ROOT}/vstgui4/vstgui/plugin-bindings/vst3editor.cpp
     ${VST3_SDK_ROOT}/public.sdk/source/vst/vstguieditor.cpp
 )
-
-#############################
-# System specific libraries #
-#############################
 
 ## include macOS specific libraries
 
@@ -338,14 +342,16 @@ if (SMTG_CREATE_VST2_VERSION)
     endif()
 endif()
 
+endif()
+
 ######################
 # Installation paths #
 ######################
 
 if(APPLE)
-  install(TARGETS ${target}
-    DESTINATION "$ENV{HOME}/Library/Audio/Plug-Ins/VST"
-  )
+#  install(TARGETS ${target}
+#    DESTINATION "$ENV{HOME}/Library/Audio/Plug-Ins/VST"
+ # )
 elseif(WIN32)
   install(TARGETS ${target}
     DESTINATION "C:/Program Files (x86)/Common Files/VST3/"

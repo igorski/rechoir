@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.19)
 
-
 option(JAMBA_ENABLE_VST2 "Use VST2" OFF)
 option(JAMBA_ENABLE_AUDIO_UNIT "Enable Audio Unit" ON)
 option(JAMBA_DOWNLOAD_VSTSDK "Download VST SDK if not installed" OFF)
 set(JAMBA_MACOS_DEPLOYMENT_TARGET "10.10" CACHE STRING "macOS deployment target")
 
 # To use local jamba install, uncomment the following line (no download)
-set(JAMBA_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/build/jamba")
+#set(JAMBA_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/build/jamba")
 
 # download jamba framework
 include("fetch_jamba.cmake")
