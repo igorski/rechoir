@@ -1,45 +1,44 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.19)
 
-include(FetchContent)
 
-if(JAMBA_ROOT_DIR)
-	# instructs FetchContent to not download or update but use the location instead
-	set(FETCHCONTENT_SOURCE_DIR_JAMBA ${JAMBA_ROOT_DIR})
-else()
-	set(FETCHCONTENT_SOURCE_DIR_JAMBA "")
-endif()
+option(JAMBA_ENABLE_VST2 "Use VST2" OFF)
+option(JAMBA_ENABLE_AUDIO_UNIT "Enable Audio Unit" ON)
+option(JAMBA_DOWNLOAD_VSTSDK "Download VST SDK if not installed" OFF)
+set(JAMBA_MACOS_DEPLOYMENT_TARGET "10.10" CACHE STRING "macOS deployment target")
 
-set(JAMBA_GIT_REPO "https://github.com/pongasoft/jamba" CACHE STRING "Jamba git repository url" FORCE)
-set(JAMBA_GIT_TAG v5.0.0 CACHE STRING "Jamba git tag" FORCE)
+# To use local jamba install, uncomment the following line (no download)
+set(JAMBA_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/build/jamba")
 
-FetchContent_Declare(jamba
-    GIT_REPOSITORY    ${JAMBA_GIT_REPO}
-    GIT_TAG           ${JAMBA_GIT_TAG}
-    GIT_CONFIG        advice.detachedHead=false
-    GIT_SHALLOW       true
-    SOURCE_DIR        "${CMAKE_BINARY_DIR}/jamba"
-    BINARY_DIR        "${CMAKE_BINARY_DIR}/jamba-build"
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND     ""
-    INSTALL_COMMAND   ""
-    TEST_COMMAND      ""
-    )
+# download jamba framework
+include("fetch_jamba.cmake")
 
-FetchContent_GetProperties(jamba)
+# Determine proper architecture for the project
+include("${JAMBA_ROOT_DIR}/cmake/JambaSetArchitecture.cmake")
 
-if(NOT jamba_POPULATED)
+# Plugin version
+set(PLUGIN_MAJOR_VERSION 1)
+set(PLUGIN_MINOR_VERSION 0)
+set(PLUGIN_PATCH_VERSION 0)
+set(PLUGIN_VERSION "${major_version}.${minor_version}.${release_number}")
 
-  if(FETCHCONTENT_SOURCE_DIR_JAMBA)
-    message(STATUS "Using jamba from local ${FETCHCONTENT_SOURCE_DIR_JAMBA}")
-  else()
-    message(STATUS "Fetching jamba ${JAMBA_GIT_REPO}@${JAMBA_GIT_TAG}")
-  endif()
+# Project
+project("${target}" VERSION "${PLUGIN_VERSION}")
 
-  FetchContent_Populate(jamba)
+# To use local googletest install, uncomment the following line (no download) and modify the path accordingly
+set(GOOGLETEST_ROOT_DIR "")
+#set(GOOGLETEST_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../google/googletest")
 
-endif()
+# Include Jamba
+include("${JAMBA_ROOT_DIR}/jamba.cmake")
 
-set(JAMBA_ROOT_DIR ${jamba_SOURCE_DIR})
+# Generating the version.h header file which contains the plugin version (to make sure it is in sync with the version
+# defined here)
+set(VERSION_DIR "${CMAKE_BINARY_DIR}/generated")
 
-# finally we include jamba itself
-include(${JAMBA_ROOT_DIR}/jamba.cmake)
+# Location of resources
+# set(RES_DIR "${CMAKE_CURRENT_LIST_DIR}/resource")
+
+# List of test cases
+set(test_case_sources
+#    "${TEST_DIR}/test-rechoir.cpp"
+)

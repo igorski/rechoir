@@ -135,10 +135,21 @@ When debugging, you can also choose to run the plugin against Steinbergs validat
 
 ### Build as Audio Unit (macOS only)
 
-Is aided by the excellent [Jamba framework](https://github.com/pongasoft/jamba) by Pongasoft, which provides a toolchain around Steinbergs SDK. Execute the following instructions to build the plugin as an Audio Unit:
+For this you will need a little extra preparation while building Steinberg SDK. Additionally, you will need the
+CoreAudio SDK and XCode. Execute the following instructions to build the SDK with Audio Unit support, replace `SMTG_COREAUDIO_SDK_PATH` with the actual installation location of the CoreAudio SDK:
 
-* Build the AUWrapper Project in the Steinberg SDK folder
-* Create a Release build of the Xcode project generated in step 1, this creates _vst3sdk/public.sdk/source/vst/auwrapper/build/lib/Release/libauwrapper.a_
+```
+cd vst3sdk
+mkdir build
+cd build
+cmake -GXcode -DCMAKE_BUILD_TYPE=Release -DSMTG_COREAUDIO_SDK_PATH=/Library/CoreAudioSDK/CoreAudio ..
+xcodebuild
+```
+
+* Create a Release build of the Xcode project generated in step 1, this creates _VST3_SDK/public.sdk/source/vst/auwrapper/build/lib/Release/libauwrapper.a_
+
+Execute the following instructions to build the plugin as an Audio Unit:
+
 * Run _sh build_au.sh_ from the repository root, providing the path to _VST3_SDK_ROOT_ as before:
 
 ```
