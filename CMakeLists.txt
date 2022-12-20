@@ -178,7 +178,7 @@ if (JAMBA_ENABLE_AUDIO_UNIT)
     jamba_add_vst_plugin(
         TARGET                "${target}" # name of CMake target for the plugin
         RELEASE_FILENAME      "rechoir" # filename for the plugin
-        RELEASE_SNAPSHOTS     "resource/background.png"# "${RES_DIR}/F7412A98069E438EBF721F95826A554D_snapshot_2.0x.png"
+    #    RELEASE_SNAPSHOTS     "resource/background.png"# "${RES_DIR}/F7412A98069E438EBF721F95826A554D_snapshot_2.0x.png"
         ARCHIVE_ARCHITECTURE  "${JAMBA_ARCHIVE_ARCHITECTURE}"
         TARGETS_PREFIX        "jmb_" # prefix used by all targets directly linked to this plugin
         VST_SOURCES           "${vst_sources}" # the source files that compose the plugin
