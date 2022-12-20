@@ -221,6 +221,8 @@ IF (APPLE)
     target_sources (${target} PRIVATE
         ${VST3_SDK_ROOT}/public.sdk/source/main/macmain.cpp
         ${VST3_SDK_ROOT}/vstgui4/vstgui/vstgui_mac.mm
+        # TODO below AU only (or not at all?)
+        ${VST3_SDK_ROOT}/public.sdk/source/common/threadchecker_mac.mm
     )
     if(XCODE)
         if(SMTG_IOS_DEVELOPMENT_TEAM)
@@ -244,7 +246,21 @@ IF (APPLE)
             )
         else()
             ## macOS plugin
-            target_link_libraries(${target} PRIVATE "-framework Cocoa" "-framework OpenGL" "-framework Accelerate" "-framework QuartzCore" "-framework Carbon")
+            set(MACOS_LIBRARIES
+                "-framework Cocoa"
+                "-framework OpenGL"
+                "-framework Accelerate"
+                "-framework QuartzCore"
+                "-framework Carbon"
+            )
+            if (CREATE_AUDIO_UNIT)
+                set(MACOS_LIBRARIES
+                    ${MACOS_LIBRARIES}
+                    "-framework AudioToolbox"
+                    "-framework CoreMIDI"
+                )
+            endif()
+            target_link_libraries(${target} PRIVATE ${MACOS_LIBRARIES})
         endif()
     else()
         find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)

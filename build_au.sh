@@ -23,7 +23,8 @@ fi
 
 # run CMake using Audio Unit build target
 cmake -GXcode ${DVST3_SDK_ROOT} "-DCMAKE_OSX_ARCHITECTURES=x86_64" "-DCREATE_AUDIO_UNIT=ON" "-DSMTG_COREAUDIO_SDK_PATH=/Library/CoreAudioSDK/CoreAudio" "${BASEDIR}"
-xcodebuild -configuration Release build
+cmake --build . --config Release
+#xcodebuild -configuration Release build
 # "OTHER_LDFLAGS=-force_load ${VST3_SDK_ROOT}/build/lib/Release/libsdk_hosting.a"
 
 cd ..
