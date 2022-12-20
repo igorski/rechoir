@@ -26,7 +26,7 @@ cmake -GXcode ${DVST3_SDK_ROOT} "-DCMAKE_OSX_ARCHITECTURES=x86_64" "-DJAMBA_ENAB
 
 # build Audio Unit using Jamba in Release mode
 
-sh jamba.sh build-au -r
+sh jamba.sh -r build-au
 sh jamba.sh install-au
 
 cd ..

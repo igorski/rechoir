@@ -143,7 +143,7 @@ cd vst3sdk
 mkdir build
 cd build
 cmake -GXcode -DCMAKE_BUILD_TYPE=Release -DSMTG_COREAUDIO_SDK_PATH=/Library/CoreAudioSDK/CoreAudio ..
-xcodebuild
+cmake --build . --config Release
 ```
 
 * Create a Release build of the Xcode project generated in step 1, this creates _VST3_SDK/public.sdk/source/vst/auwrapper/build/lib/Release/libauwrapper.a_
