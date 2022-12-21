@@ -170,7 +170,7 @@ namespace Calc {
         }*/
         float abs_y = std::fabs( y ) + 1e-10f; // kludge to prevent 0/0 condition
     	float r = ( x - std::copysign( abs_y, x )) / ( abs_y + std::fabs( x ));
-    	float angle = M_PI/2.f - std::copysign( 0.7853981633974483f /* M_PI / 4.0 */, x );
+    	float angle = M_PI / 2.f - std::copysign( 0.7853981633974483f /* M_PI / 4.0 */, x );
 
     	angle += ( 0.1963f * r * r - 0.9817f ) * r;
 
