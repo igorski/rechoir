@@ -2,20 +2,13 @@
 cmake_minimum_required(VERSION 3.15.0)
 
 project(smtg-vst3-rechoir
-    VERSION ${vstsdk_VERSION}.0
-    DESCRIPTION "Steinberg VST 3 rechoir example"
+    VERSION 1.0.0.0
+    DESCRIPTION "igorski.nl Rechoir"
 )
 
 if(NOT SMTG_ADD_VSTGUI)
     return()
 endif()
-
-if (SMTG_CREATE_VST2_rechoir_SAMPLE_VERSION)
-    set(rechoir_vst2_sources
-        ${SDK_ROOT}/public.sdk/source/vst/vst2wrapper/vst2wrapper.sdk.cpp
-        source/rechoirentry_vst2.cpp
-    )
-endif(SMTG_CREATE_VST2_rechoir_SAMPLE_VERSION)
 
 set(rechoir_sources
     src/global.h
@@ -108,6 +101,7 @@ if (SMTG_MAC AND XCODE AND SMTG_COREAUDIO_SDK_PATH)
 	smtg_target_add_auv2(rechoir-au
 		BUNDLE_NAME rechoir
 		BUNDLE_IDENTIFIER nl.igorski.vst.${target}.audiounit
-		INFO_PLIST_TEMPLATE ${CMAKE_CURRENT_SOURCE_DIR}/resource/au-info.plist
-		VST3_PLUGIN_TARGET rechoir)
+		INFO_PLIST_TEMPLATE ${CMAKE_CURRENT_SOURCE_DIR}/audio-unit/Info.plist
+		VST3_PLUGIN_TARGET rechoir
+    )
 endif(SMTG_MAC AND XCODE AND SMTG_COREAUDIO_SDK_PATH)
