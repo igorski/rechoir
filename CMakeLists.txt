@@ -149,6 +149,7 @@ set(vst_sources
     src/ui/controller.h
     src/ui/controller.cpp
     src/ui/uimessagecontroller.h
+    resource/plugin.uidesc
     ${VSTSDK_PLUGIN_SOURCE}
 )
 

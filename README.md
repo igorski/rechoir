@@ -146,8 +146,6 @@ cmake -GXcode -DCMAKE_BUILD_TYPE=Release -DSMTG_COREAUDIO_SDK_PATH=/Library/Core
 cmake --build . --config Release
 ```
 
-* Create a Release build of the Xcode project generated in step 1, this creates _VST3_SDK/public.sdk/source/vst/auwrapper/build/lib/Release/libauwrapper.a_
-
 Execute the following instructions to build the plugin as an Audio Unit:
 
 * Run _sh build_au.sh_ from the repository root, providing the path to _VST3_SDK_ROOT_ as before:
