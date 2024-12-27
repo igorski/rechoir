@@ -19,7 +19,7 @@
 
 // The full name of the audio unit.
 // This is derived from the manufacturer and description key values
-#define kAUcomponentName Rechoir
+#define kAUcomponentName Igorski: Rechoir
 
 // Displayed Tags
 #define kAUcomponentTag Effects
