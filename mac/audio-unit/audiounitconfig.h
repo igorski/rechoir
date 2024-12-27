@@ -6,8 +6,8 @@
 
 // A subtype code (unique ID) for the audio unit, such as gav3.
 // This value must be exactly 4 alphanumeric characters
-#define kAUcomponentSubType 'dely'
-#define kAUcomponentSubType1 dely
+#define kAUcomponentSubType 'del2'
+#define kAUcomponentSubType1 del2
 
 // A manufacturer code for the audio unit, such as Aaud.
 // This value must be exactly 4 alphanumeric characters
